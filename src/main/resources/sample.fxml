@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox stylesheets="@css/light.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
+   <children>
+      <MenuBar>
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" pannable="true">
+         <content>
+            <VBox>
+               <children>
+                  <TitledPane text="Данные о реке">
+                     <content>
+                        <TilePane hgap="5.0" prefColumns="3" tileAlignment="TOP_LEFT" vgap="5.0">
+                           <children>
+                              <VBox>
+                                 <children>
+                                    <Label text="LB - Средняя ширина" />
+                                    <TextField />
+                                 </children>
+                              </VBox>
+                              <VBox>
+                                 <children>
+                                    <Label text="LH - Средняя глубина" />
+                                    <TextField />
+                                 </children>
+                              </VBox>
+                              <VBox>
+                                 <children>
+                                    <Label text="VS - Сред. скорость течения" />
+                                    <TextField />
+                                 </children>
+                              </VBox>
+                              <VBox>
+                                 <children>
+                                    <Label styleClass="textWithTooltip" stylesheets="@css/light.css" text="DY - Диффузия">
+                                       <tooltip>
+                                          <Tooltip text=" Коэффициент поперечной диффузии" />
+                                       </tooltip>
+                                    </Label>
+                                    <TextField />
+                                 </children>
+                              </VBox>
+                              <VBox>
+                                 <children>
+                                    <Label styleClass="textWithTooltip" stylesheets="@css/light.css" text="K1 - Неконсервативность">
+                                       <tooltip>
+                                          <Tooltip text="Коэффициент неконсервативности" />
+                                       </tooltip>
+                                    </Label>
+                                    <TextField />
+                                 </children>
+                              </VBox>
+                              <VBox />
+                           </children>
+                        </TilePane>
+                     </content>
+                  </TitledPane>
+                  <TitledPane text="Вещества">
+                     <content>
+                        <TilePane hgap="5.0" prefColumns="3" vgap="5.0">
+                           <children>
+                              <VBox>
+                                 <children>
+                                    <Label text="Наименование" />
+                                    <TextField />
+                                 </children>
+                              </VBox>
+                              <VBox>
+                                 <children>
+                                    <Label text="Доля в ЛПВ" />
+                                    <TextField />
+                                 </children>
+                              </VBox>
+                              <VBox>
+                                 <children>
+                                    <Label text="Значение CPDK" />
+                                    <TextField />
+                                 </children>
+                              </VBox>
+                              <VBox>
+                                 <children>
+                                    <Label styleClass="textWithTooltip" text="Фоновая концентрация">
+                                       <tooltip>
+                                          <Tooltip text="Фоновая концентрация в точках выпуска" />
+                                       </tooltip>
+                                    </Label>
+                                    <TextField />
+                                 </children>
+                              </VBox>
+                              <VBox>
+                                 <children>
+                                    <Label text="Кол-во створов выпуска" />
+                                    <TextField />
+                                 </children>
+                              </VBox>
+                              <VBox>
+                                 <children>
+                                    <Label styleClass="textWithTooltip" text="Округление">
+                                       <tooltip>
+                                          <Tooltip text="Количество цифр после запятой {0, 1, 2, 3 ...}" />
+                                       </tooltip>
+                                    </Label>
+                                    <TextField />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </TilePane>
+                     </content>
+                  </TitledPane>
+                  <Accordion fx:id="accordionPlant" />
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+</VBox>

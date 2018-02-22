@@ -1,0 +1,4 @@
+.textWithTooltip{
+    -fx-text-fill: blue;
+    -fx-underline: true;
+}

@@ -15,15 +15,15 @@ import javafx.scene.layout.VBox;
 public class Controller {
 
     @FXML
-    Label labelNonconservatismCoef;
+    TextField textFieldNonConservatismCoef;
     @FXML
-    Label labelDiffusionCoef;
+    TextField textFieldDiffusionCoef;
     @FXML
-    Label labelFlowSpeed;
+    TextField textFieldFlowSpeed;
     @FXML
-    Label labelRiverDepth;
+    TextField textFieldRiverDepth;
     @FXML
-    Label labelRiverWidth;
+    TextField textFieldRiverWidth;
     @FXML
     Accordion accordionPlant;
 

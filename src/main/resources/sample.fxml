@@ -12,7 +12,6 @@
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 
-
 <VBox stylesheets="@css/light.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
    <children>
       <MenuBar>
@@ -45,19 +44,19 @@
                               <VBox>
                                  <children>
                                     <Label text="LB - Средняя ширина" />
-                                    <TextField />
+                                    <TextField fx:id="textFieldRiverWidth" />
                                  </children>
                               </VBox>
                               <VBox>
                                  <children>
                                     <Label text="LH - Средняя глубина" />
-                                    <TextField />
+                                    <TextField fx:id="textFieldRiverDepth" />
                                  </children>
                               </VBox>
                               <VBox>
                                  <children>
                                     <Label text="VS - Сред. скорость течения" />
-                                    <TextField />
+                                    <TextField fx:id="textFieldFlowSpeed" />
                                  </children>
                               </VBox>
                               <VBox>
@@ -67,7 +66,7 @@
                                           <Tooltip text=" Коэффициент поперечной диффузии" />
                                        </tooltip>
                                     </Label>
-                                    <TextField />
+                                    <TextField fx:id="textFieldDiffusionCoef" />
                                  </children>
                               </VBox>
                               <VBox>
@@ -77,7 +76,7 @@
                                           <Tooltip text="Коэффициент неконсервативности" />
                                        </tooltip>
                                     </Label>
-                                    <TextField />
+                                    <TextField fx:id="textFieldNonConservatismCoef" />
                                  </children>
                               </VBox>
                               <VBox />

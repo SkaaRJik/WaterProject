@@ -1,4 +1,4 @@
-package model.utils;
+package utils;
 
 /**
  * Класс-калькулятор для рассчета параметров реки<br>

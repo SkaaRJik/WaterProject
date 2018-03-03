@@ -29,10 +29,6 @@ public class Model {
     double cellSizeX = 0; //Масштаб. Обозначает длину 1 ячейки
     double cellSizeY = 0; //Масштаб. Обозначает ширину 1 ячейки
 
-
-
-
-
     public Model(River river, BasePipe[] pipes) {
         this.riverInfo = river; //Сохраним информацию о реке
         this.pipes = pipes; //Сохраним трубы, которые используются в модели
@@ -41,7 +37,7 @@ public class Model {
         this.river = new double[this.rows][this.columns+1]; //По длине реки, берем одну ячейку на запас
         for(BasePipe pipe : pipes){
             pipe.putPipeOnRiver(this.cellSizeX, this.cellSizeY, this.rows, this.columns); //Определяем положение труб на модели
-            pipe.calculateInitialDilution(riverInfo, this.rows);
+            pipe.calculateInitialDilution(riverInfo, this.rows); //Определяем начальное разбавление для каждой трубы
         }
     }
 
@@ -89,7 +85,7 @@ public class Model {
      * @param j индекс рассчитываемой ячейки
      * @return
      */
-    public double getNewConcentration(int i, int j){
+    private double getNewConcentration(int i, int j){
         double c1=0,c2=0,c3=0,c4=0;
         if(i-1 >= 0) c1 = this.river[i-1][j+1];
         c2 = this.river[i][j+1];

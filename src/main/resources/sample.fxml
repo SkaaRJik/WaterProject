@@ -91,19 +91,19 @@
                               <VBox>
                                  <children>
                                     <Label text="Наименование" />
-                                    <TextField />
+                                    <TextField fx:id="textFieldSubstance" />
                                  </children>
                               </VBox>
                               <VBox>
                                  <children>
                                     <Label text="Доля в ЛПВ" />
-                                    <TextField />
+                                    <TextField fx:id="textFieldProportion" />
                                  </children>
                               </VBox>
                               <VBox>
                                  <children>
                                     <Label text="Значение CPDK" />
-                                    <TextField />
+                                    <TextField fx:id="textFieldLAC" />
                                  </children>
                               </VBox>
                               <VBox>
@@ -113,13 +113,13 @@
                                           <Tooltip text="Фоновая концентрация в точках выпуска" />
                                        </tooltip>
                                     </Label>
-                                    <TextField />
+                                    <TextField fx:id="textFieldConcentration" />
                                  </children>
                               </VBox>
                               <VBox>
                                  <children>
                                     <Label text="Кол-во створов выпуска" />
-                                    <TextField />
+                                    <TextField fx:id="textFieldNumberOfPipes" />
                                  </children>
                               </VBox>
                               <VBox>
@@ -129,7 +129,7 @@
                                           <Tooltip text="Количество цифр после запятой {0, 1, 2, 3 ...}" />
                                        </tooltip>
                                     </Label>
-                                    <TextField />
+                                    <TextField fx:id="textFieldOccuracy" />
                                  </children>
                               </VBox>
                            </children>

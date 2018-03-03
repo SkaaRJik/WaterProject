@@ -43,7 +43,7 @@ public class Main extends Application {
         primaryStage.setScene(scene);
 
         Controller controller = loader.getController();
-        controller.init();
+        controller.fillAccordion(1);
 
         primaryStage.show();
     }

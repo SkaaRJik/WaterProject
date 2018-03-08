@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import model.pipe.BasePipe;
 import model.pipe.CoastalConcentratedPipe;
+import model.pipe.CoastalSpreadPipe;
 import model.pipe.mode.*;
 import model.river.River;
 
@@ -313,10 +314,11 @@ public class Controller {
 
 
         counter = 0;
+        Mode mode = null;
         for(Map<String, Node> titledPane : dynamicComponents){
             ChoiceBox<String> modeChoiceBox = (ChoiceBox<String>) titledPane.get("choiceBoxModeOfPipe");
             if( !modeChoiceBox.getValue().equals("Выключен") ) {
-                Mode mode = null;
+
                 switch (modeChoiceBox.getValue()){
                     case "Стационарный": {
                         mode = new StationaryMode();
@@ -344,50 +346,76 @@ public class Controller {
 
             }
 
-            //УДАЛИТЬ ВОТ ЭТО ВОТ!
-            new ChoiceBox(FXCollections.observableArrayList("Береговой сосредоточенный",
-                    "Береговой распределенный", "Русловой сосредоточенный", "Русловой рассеивающий",
-                    "Русловой рассеивающий с 2 ветками"));
 
-            //_____________________________________
 
 
 
 
             ChoiceBox<String> typeChoiceBox = (ChoiceBox<String>) titledPane.get("choiceBoxTypeOfPipe");
             switch (typeChoiceBox.getValue()){
-                case "Русловой рассеивающий с 2 ветками": {
-
-                    /*
-                    textFieldConcentration
-                textFieldWastewater
-                    * textFieldCoordinate
-                choiceBoxCoast
-        textFieldLength
-                textFieldSpacingPipes
-        textFieldDistanceToPipe
-                textFieldSpacingBranch
-                    *
-                    * */
-
-
+                case "Береговой сосредоточенный": {
+                    double x = Double.parseDouble(( (TextField) titledPane.get("textFieldCoordinate")).getText());
+                    boolean coast = false;
+                    String temp = ((ChoiceBox<String>) titledPane.get("choiceBoxCoast")).getValue();
+                    if(temp.equals("Левый")) coast = true;
+                    double concentration = Double.parseDouble(( (TextField) titledPane.get("textFieldConcentration")).getText());
+                    double wastewater = Double.parseDouble(( (TextField) titledPane.get("textFieldWastewater")).getText());
+                    pipes[counter++] = new CoastalConcentratedPipe(x, coast, mode, concentration, wastewater);
+                    break;
+                }
+                case "Береговой распределенный ": {
                     double x = Double.parseDouble(( (TextField) titledPane.get("textFieldCoordinate")).getText());
                     double length = Double.parseDouble(( (TextField) titledPane.get("textFieldLength")).getText());
                     boolean coast = false;
-                    if(((ChoiceBox<String>) titledPane.get("textFieldLength")).getValue().equals("Левый")) coast = true;
+                    String temp = ((ChoiceBox<String>) titledPane.get("choiceBoxCoast")).getValue();
+                    if(temp.equals("Левый")) coast = true;
+                    double concentration = Double.parseDouble(( (TextField) titledPane.get("textFieldConcentration")).getText());
+                    double wastewater = Double.parseDouble(( (TextField) titledPane.get("textFieldWastewater")).getText());
+                    double spacingPipes = Double.parseDouble(( (TextField) titledPane.get("textFieldSpacingPipes")).getText());
+                    pipes[counter++] = new CoastalSpreadPipe(x, coast, mode, length, spacingPipes, concentration, wastewater);
+                    break;
+                }
+                case "Русловой сосредоточенный": {
+                    double x = Double.parseDouble(( (TextField) titledPane.get("textFieldCoordinate")).getText());
+                    double length = Double.parseDouble(( (TextField) titledPane.get("textFieldLength")).getText());
+                    boolean coast = false;
+                    String temp = ((ChoiceBox<String>) titledPane.get("choiceBoxCoast")).getValue();
+                    if(temp.equals("Левый")) coast = true;
                     double concentration = Double.parseDouble(( (TextField) titledPane.get("textFieldConcentration")).getText());
                     double wastewater = Double.parseDouble(( (TextField) titledPane.get("textFieldWastewater")).getText());
                     double spacingPipes = Double.parseDouble(( (TextField) titledPane.get("textFieldSpacingPipes")).getText());
                     double distanceToPipe = Double.parseDouble(( (TextField) titledPane.get("textFieldDistanceToPipe")).getText());
                     double spacingBranch = Double.parseDouble(( (TextField) titledPane.get("textFieldSpacingBranch")).getText());
+                    //pipes[counter++] = new
+                    break;
+                }
+                case "Русловой рассеивающий": {
+                    double x = Double.parseDouble(( (TextField) titledPane.get("textFieldCoordinate")).getText());
+                    double length = Double.parseDouble(( (TextField) titledPane.get("textFieldLength")).getText());
+                    boolean coast = false;
+                    String temp = ((ChoiceBox<String>) titledPane.get("choiceBoxCoast")).getValue();
+                    if(temp.equals("Левый")) coast = true;
+                    double concentration = Double.parseDouble(( (TextField) titledPane.get("textFieldConcentration")).getText());
+                    double wastewater = Double.parseDouble(( (TextField) titledPane.get("textFieldWastewater")).getText());
+                    double spacingPipes = Double.parseDouble(( (TextField) titledPane.get("textFieldSpacingPipes")).getText());
+                    double distanceToPipe = Double.parseDouble(( (TextField) titledPane.get("textFieldDistanceToPipe")).getText());
+                    double spacingBranch = Double.parseDouble(( (TextField) titledPane.get("textFieldSpacingBranch")).getText());
+                    //pipes[counter++] = new
+                    break;
+                }
+                case "Русловой рассеивающий с 2 ветками": {
 
-
-
-
-                    /*content.put("textFieldSpacingPipes", textFieldSpacingPipes);
-                    content.put("textFieldDistanceToPipe", textFieldDistanceToPipe);
-                    content.put("textFieldSpacingBranch", textFieldSpacingBranch);*/
-                    //pipes[counter] = new CoastalConcentratedPipe(x, coast, );
+                    double x = Double.parseDouble(( (TextField) titledPane.get("textFieldCoordinate")).getText());
+                    double length = Double.parseDouble(( (TextField) titledPane.get("textFieldLength")).getText());
+                    boolean coast = false;
+                    String temp = ((ChoiceBox<String>) titledPane.get("choiceBoxCoast")).getValue();
+                    if(temp.equals("Левый")) coast = true;
+                    double concentration = Double.parseDouble(( (TextField) titledPane.get("textFieldConcentration")).getText());
+                    double wastewater = Double.parseDouble(( (TextField) titledPane.get("textFieldWastewater")).getText());
+                    double spacingPipes = Double.parseDouble(( (TextField) titledPane.get("textFieldSpacingPipes")).getText());
+                    double distanceToPipe = Double.parseDouble(( (TextField) titledPane.get("textFieldDistanceToPipe")).getText());
+                    double spacingBranch = Double.parseDouble(( (TextField) titledPane.get("textFieldSpacingBranch")).getText());
+                    //pipes[counter++] = new
                     break;
                 }
             }
@@ -437,5 +465,6 @@ public class Controller {
     }
 
     public void calculate(ActionEvent event) {
+        createPipesFromGUI();
     }
 }

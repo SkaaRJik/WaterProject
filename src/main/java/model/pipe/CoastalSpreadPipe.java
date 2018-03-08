@@ -25,7 +25,7 @@ public class CoastalSpreadPipe extends BasePipe{
      * @param concentartion концентрация примеси в стоках (мг/л)
      * @param wastewaterConsumption расход сточных вод (мг<sup>3</sup>/с)
      */
-    public CoastalSpreadPipe(double x, boolean coast, Mode mode, double length, double padding, boolean turnedOn, double concentartion, double wastewaterConsumption ) {
+    public CoastalSpreadPipe(double x, boolean coast, Mode mode, double length, double padding, double concentartion, double wastewaterConsumption ) {
         this.x = x * 1000; //Переводим км в м.
         this.endX = this.x + length; //Помечаем конец трубы
         this.coast = coast;

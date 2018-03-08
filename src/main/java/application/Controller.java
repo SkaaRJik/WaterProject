@@ -9,6 +9,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import model.pipe.BasePipe;
+import model.pipe.CoastalConcentratedPipe;
+import model.pipe.mode.*;
 import model.river.River;
 
 import java.util.*;
@@ -75,6 +77,24 @@ public class Controller {
         content.put("choiceBoxTypeOfPipe", choiceBoxTypeOfPipe);
         VBox typeContainer = new VBox(typeLabel,choiceBoxTypeOfPipe);
 
+        Label labelConcentration = new Label("Концентрация (мг/л)");
+        labelConcentration.setId("textWithTooltip");
+        Tooltip.install(labelConcentration, new Tooltip("Расстояние между ветками (м)"));
+        TextField textFieldConcentration = new TextField();
+        content.put("textFieldConcentration", textFieldConcentration);
+        VBox concentrationContainer = new VBox(labelConcentration, textFieldConcentration);
+
+
+
+
+        Label labelWastewater = new Label("Расход ст. вод (м^3/сек)");
+        labelWastewater.setId("textWithTooltip");
+        Tooltip.install(labelWastewater, new Tooltip("Расход сточных вод (м^3/сек)"));
+        TextField textFieldWastewater = new TextField();
+        content.put("textFieldWastewater", textFieldWastewater);
+        VBox wastewaterContainer = new VBox(labelWastewater, textFieldWastewater);
+
+
         Label timeLabel = new Label("Время работы (с)");
         TextField textFieldTime = new TextField();
         VBox timeContainer = new VBox(timeLabel, textFieldTime);
@@ -137,30 +157,43 @@ public class Controller {
         VBox bankContainer = new VBox(bankLabel, choiceBoxCoast);
 
 
-        Label labelCoordinateX = new Label("Точка выпуска (км)");
+        Label labelCoordinateX = new Label("Точка начала  выпуска (км)");
         labelCoordinateX.setId("textWithTooltip");
         Tooltip.install(labelCoordinateX, new Tooltip("Координата точки х - удаленность от контрольного створа"));
         TextField textFieldCoordinate = new TextField();
         content.put("textFieldCoordinate", textFieldCoordinate);
         VBox coordinateContainer = new VBox(labelCoordinateX, textFieldCoordinate);
 
-
-        flowPane.getChildren().addAll(typeContainer, modContainer, bankContainer, coordinateContainer);
+        flowPane.getChildren().addAll(typeContainer, concentrationContainer, wastewaterContainer, modContainer, bankContainer, coordinateContainer);
 
         /*_______________________________________________________*/
 
-        /* Береговая распределенная труба */
 
         Label labelLength = new Label();
         labelLength.setId("textWithTooltip");
         TextField textFieldLength = new TextField();
         VBox lengthContainer = new VBox(labelLength, textFieldLength);
 
-        Label labelMiniPipes = new Label("Патрубки (м)");
-        labelMiniPipes.setId("textWithTooltip");
-        Tooltip.install(labelMiniPipes, new Tooltip("Расстояние между патрубками (м)"));
-        TextField textFieldMiniPipes = new TextField();
-        VBox miniPipesContainer = new VBox(labelMiniPipes, textFieldMiniPipes);
+
+        Label labelSpacingPipes = new Label("Расст-ие м/д патрубками (м)");
+        labelSpacingPipes.setId("textWithTooltip");
+        Tooltip.install(labelSpacingPipes, new Tooltip("Расстояние между патрубками (м)"));
+        TextField textFieldSpacingPipes = new TextField();
+        VBox spacingPipesContainer = new VBox(labelSpacingPipes, textFieldSpacingPipes);
+
+
+
+        Label labelDistanceToPipe = new Label("Расст-ие до 1 патрубка (м)");
+        labelDistanceToPipe.setId("textWithTooltip");
+        Tooltip.install(labelDistanceToPipe, new Tooltip("Расстояние от берега до 1 патрубка (м)"));
+        TextField textFieldDistanceToPipe = new TextField();
+        VBox distanceToPipeContainer = new VBox(labelDistanceToPipe, textFieldDistanceToPipe);
+
+        Label labelSpacingBranch = new Label("Расст-ие м/д ветками (м)");
+        labelSpacingBranch.setId("textWithTooltip");
+        Tooltip.install(labelSpacingBranch, new Tooltip("Расстояние между ветками (м)"));
+        TextField textFieldSpacingBranch = new TextField();
+        VBox spacingBranchContainer = new VBox(labelSpacingBranch, textFieldSpacingBranch);
 
         /* ___________________________________________________________ */
 
@@ -171,29 +204,60 @@ public class Controller {
             switch (oldValue) {
                 case "Береговой распределенный":
                     content.keySet().remove("textFieldLength");
-                    content.keySet().remove("textFieldMiniPipes");
+                    content.keySet().remove("textFieldSpacingPipes");
                     flowPane.getChildren().remove(lengthContainer);
-                    flowPane.getChildren().remove(miniPipesContainer);
+                    flowPane.getChildren().remove(spacingPipesContainer);
                     break;
                 case "Русловой сосредоточенный":
                     content.keySet().remove("textFieldLength");
                     flowPane.getChildren().remove(lengthContainer);
                     break;
-
+                case "Русловой рассеивающий":
+                    content.keySet().remove("textFieldLength");
+                    content.keySet().remove("textFieldSpacingPipes");
+                    content.keySet().remove("textFieldDistanceToPipe");
+                    flowPane.getChildren().removeAll(lengthContainer, distanceToPipeContainer, spacingPipesContainer);
+                    break;
+                case "Русловой рассеивающий с 2 ветками":
+                    content.keySet().remove("textFieldLength");
+                    content.keySet().remove("textFieldSpacingPipes");
+                    content.keySet().remove("textFieldDistanceToPipe");
+                    content.keySet().remove("textFieldSpacingBranch");
+                    flowPane.getChildren().removeAll(lengthContainer, distanceToPipeContainer, spacingPipesContainer, spacingBranchContainer);
+                    break;
             }
             switch (newValue) {
                 case "Береговой распределенный":
                     content.put("textFieldLength", textFieldLength);
-                    content.put("textFieldMiniPipes", textFieldMiniPipes);
+                    content.put("textFieldSpacingPipes", textFieldSpacingPipes);
                     labelLength.setText("Распределенная часть (м)");
                     Tooltip.install(labelLength, new Tooltip("Длина распределенной части выпуска (м)"));
-                    flowPane.getChildren().addAll(lengthContainer, miniPipesContainer);
+                    flowPane.getChildren().addAll(lengthContainer, spacingPipesContainer);
                     break;
                 case "Русловой сосредоточенный":
                     labelLength.setText("Протяженность (м)");
                     content.put("textFieldLength", textFieldLength);
                     Tooltip.install(labelLength, new Tooltip("Расстояние от берега до точки выпуска"));
                     flowPane.getChildren().add(lengthContainer);
+                    break;
+                case "Русловой рассеивающий":
+                    labelLength.setText("Рассеивающая часть (м)");
+                    content.put("textFieldLength", textFieldLength);
+                    content.put("textFieldSpacingPipes", textFieldSpacingPipes);
+                    content.put("textFieldDistanceToPipe", textFieldDistanceToPipe);
+                    Tooltip.install(labelLength, new Tooltip("Длина рассеивающей части"));
+                    flowPane.getChildren().add(lengthContainer);
+                    flowPane.getChildren().addAll(distanceToPipeContainer, spacingPipesContainer);
+                    break;
+                case "Русловой рассеивающий с 2 ветками":
+                    labelLength.setText("Рассеивающая часть (м)");
+                    content.put("textFieldLength", textFieldLength);
+                    content.put("textFieldSpacingPipes", textFieldSpacingPipes);
+                    content.put("textFieldDistanceToPipe", textFieldDistanceToPipe);
+                    content.put("textFieldSpacingBranch", textFieldSpacingBranch);
+                    Tooltip.install(labelLength, new Tooltip("Длина рассеивающей части"));
+                    flowPane.getChildren().add(lengthContainer);
+                    flowPane.getChildren().addAll(distanceToPipeContainer, spacingPipesContainer, spacingBranchContainer);
                     break;
             }
             /*First solution*/
@@ -235,7 +299,103 @@ public class Controller {
 
 
     private BasePipe[] createPipesFromGUI(){
-        return new BasePipe[1];
+        //Подсчитаем количетво не выключенных выпусков
+        int counter = 0;
+        for(Map<String, Node> titledPane : dynamicComponents){
+            ChoiceBox<String> mode = (ChoiceBox<String>) titledPane.get("choiceBoxModeOfPipe");
+           if( !mode.getValue().equals("Выключен") ) counter++;
+        }
+        //Выделим под невыключенные выпуска память
+        BasePipe[] pipes = new BasePipe[counter];
+
+        //Начнем инициализировать поля труб
+
+
+
+        counter = 0;
+        for(Map<String, Node> titledPane : dynamicComponents){
+            ChoiceBox<String> modeChoiceBox = (ChoiceBox<String>) titledPane.get("choiceBoxModeOfPipe");
+            if( !modeChoiceBox.getValue().equals("Выключен") ) {
+                Mode mode = null;
+                switch (modeChoiceBox.getValue()){
+                    case "Стационарный": {
+                        mode = new StationaryMode();
+                        break;
+                    }
+                    case "Периодический": {
+                        TextField textFieldTime = (TextField) titledPane.get("textFieldTime");
+                        TextField textFieldPause = (TextField) titledPane.get("textFieldPause");
+                        mode = new PeriodicalMode(Integer.valueOf(textFieldTime.getText()), Integer.valueOf(textFieldPause.getText()));
+                        break;
+                    }
+                    case "Однократного действия": {
+                        TextField textFieldTime = (TextField) titledPane.get("textFieldTime");
+                        mode = new SingleEntryMode(Integer.valueOf(textFieldTime.getText()));
+                        break;
+                    }
+                    case "Залповый": {
+                        TextField textFieldTime = (TextField) titledPane.get("textFieldTime");
+                        mode = new VolleyMode(Integer.valueOf(textFieldTime.getText()));
+                        break;
+                    }
+                }
+
+
+
+            }
+
+            //УДАЛИТЬ ВОТ ЭТО ВОТ!
+            new ChoiceBox(FXCollections.observableArrayList("Береговой сосредоточенный",
+                    "Береговой распределенный", "Русловой сосредоточенный", "Русловой рассеивающий",
+                    "Русловой рассеивающий с 2 ветками"));
+
+            //_____________________________________
+
+
+
+
+            ChoiceBox<String> typeChoiceBox = (ChoiceBox<String>) titledPane.get("choiceBoxTypeOfPipe");
+            switch (typeChoiceBox.getValue()){
+                case "Русловой рассеивающий с 2 ветками": {
+
+                    /*
+                    textFieldConcentration
+                textFieldWastewater
+                    * textFieldCoordinate
+                choiceBoxCoast
+        textFieldLength
+                textFieldSpacingPipes
+        textFieldDistanceToPipe
+                textFieldSpacingBranch
+                    *
+                    * */
+
+
+                    double x = Double.parseDouble(( (TextField) titledPane.get("textFieldCoordinate")).getText());
+                    double length = Double.parseDouble(( (TextField) titledPane.get("textFieldLength")).getText());
+                    boolean coast = false;
+                    if(((ChoiceBox<String>) titledPane.get("textFieldLength")).getValue().equals("Левый")) coast = true;
+                    double concentration = Double.parseDouble(( (TextField) titledPane.get("textFieldConcentration")).getText());
+                    double wastewater = Double.parseDouble(( (TextField) titledPane.get("textFieldWastewater")).getText());
+                    double spacingPipes = Double.parseDouble(( (TextField) titledPane.get("textFieldSpacingPipes")).getText());
+                    double distanceToPipe = Double.parseDouble(( (TextField) titledPane.get("textFieldDistanceToPipe")).getText());
+                    double spacingBranch = Double.parseDouble(( (TextField) titledPane.get("textFieldSpacingBranch")).getText());
+
+
+
+
+                    /*content.put("textFieldSpacingPipes", textFieldSpacingPipes);
+                    content.put("textFieldDistanceToPipe", textFieldDistanceToPipe);
+                    content.put("textFieldSpacingBranch", textFieldSpacingBranch);*/
+                    //pipes[counter] = new CoastalConcentratedPipe(x, coast, );
+                    break;
+                }
+            }
+
+
+
+        }
+        return pipes;
     }
 
     /**
@@ -274,5 +434,8 @@ public class Controller {
 
         River riverInfo = new River(riverWidth, riverDepth, riverFlowSpeed);
         ApplicationFactory.getInstance().getDiffusionApp(this.scene, riverInfo).show();
+    }
+
+    public void calculate(ActionEvent event) {
     }
 }

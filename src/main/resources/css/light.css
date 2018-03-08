@@ -12,3 +12,7 @@
     -fx-border-color: yellow;
     -fx-border-radius: 10px;
 }
+
+.separatorCustom{
+    -fx-background-color: black;
+}

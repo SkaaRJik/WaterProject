@@ -1,5 +1,6 @@
 package model.pipe;
 
+import model.pipe.mode.Mode;
 import model.river.River;
 import utils.RiverMath;
 
@@ -24,13 +25,13 @@ public class CoastalSpreadPipe extends BasePipe{
      * @param concentartion концентрация примеси в стоках (мг/л)
      * @param wastewaterConsumption расход сточных вод (мг<sup>3</sup>/с)
      */
-    public CoastalSpreadPipe(double x, double endX, boolean coast, double length, double padding, boolean turnedOn, double concentartion, double wastewaterConsumption ) {
+    public CoastalSpreadPipe(double x, boolean coast, Mode mode, double length, double padding, boolean turnedOn, double concentartion, double wastewaterConsumption ) {
         this.x = x * 1000; //Переводим км в м.
         this.endX = this.x + length; //Помечаем конец трубы
         this.coast = coast;
         this.length = length;
         this.padding = padding;
-        this.turnedOn = turnedOn;
+        this.mode = mode;
         this.concentration = concentartion;
         this.wastewaterConsumption = wastewaterConsumption;
     }
@@ -39,8 +40,10 @@ public class CoastalSpreadPipe extends BasePipe{
 
     @Override
     public void mergeWaste(double[][] river) {
-        for(int i = 0 ; i < this.cellsOccupied ; i++) {
-            river[columnsLocation[i]][rowLocation] = this.initialDilution;
+        if(this.mode.update()) {
+            for (int i = 0; i < this.cellsOccupied; i++) {
+                river[columnsLocation[i]][rowLocation] = this.initialDilution;
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package model.pipe;
 
+import model.pipe.mode.Mode;
 import model.river.River;
 
 /**
@@ -14,7 +15,7 @@ public abstract class BasePipe implements IPipe, Comparable<BasePipe> {
     boolean coast;
     double x;
     double endX;
-    boolean turnedOn;
+    Mode mode;
     double concentration;
     double wastewaterConsumption;
     double initialDilution;
@@ -52,14 +53,6 @@ public abstract class BasePipe implements IPipe, Comparable<BasePipe> {
     }
 
     public double getX() { return x;     }
-
-    public boolean isTurnedOn() {
-        return turnedOn;
-    }
-
-    public void setTurnedOn(boolean turnedOn) {
-        this.turnedOn = turnedOn;
-    }
 
     public double getConcentration() {
         return concentration;

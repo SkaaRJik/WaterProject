@@ -110,8 +110,8 @@ public final class RiverMath {
      * @return Dy -коэффициент поперечной диффузии
      */
     public static double methodBanzal(double H, double Vx, double B){
-        double rightPiece = -3.547 + (1.378 * Math.log10(B * H));
-        return Math.pow(10, rightPiece) * (Vx * H);
+        double rightPiece = Math.pow((Vx * H), 1.378) * Math.pow(10, -3.547);
+        return rightPiece * (Vx * H);
     }
 
     /**
@@ -124,7 +124,7 @@ public final class RiverMath {
      *
      * @param Vx Cредняя скорость течения реки;
      * @param B Средняя ширина реки;
-     * @param f Коэффициент извилисости русла;
+     * @param f Коэффициент извилистости русла;
      * @param Nh Коэффициент шероховатости русла;
      * @param H Cредняя глубина реки;
      * @return  Dy - коэффициент поперечной диффузии

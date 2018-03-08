@@ -1,34 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox stylesheets="@css/light.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
+<VBox stylesheets="@../css/light.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
    <children>
       <MenuBar>
         <menus>
-          <Menu mnemonicParsing="false" text="File">
+          <Menu mnemonicParsing="false" text="Файл">
             <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
+              <MenuItem mnemonicParsing="false" text="Новый" />
+                  <MenuItem mnemonicParsing="false" text="Загрузить" />
+                  <MenuItem mnemonicParsing="false" text="Сохранить" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Выход" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
+          <Menu mnemonicParsing="false" text="Инструменты">
             <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
+              <MenuItem mnemonicParsing="false" onAction="#runDiffusionCalculator" text="Калькулятор поперечной диффузии" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Help">
+          <Menu mnemonicParsing="false" text="Помощь">
             <items>
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem mnemonicParsing="false" text="О программе" />
             </items>
           </Menu>
         </menus>
@@ -61,7 +70,7 @@
                               </VBox>
                               <VBox>
                                  <children>
-                                    <Label styleClass="textWithTooltip" stylesheets="@css/light.css" text="DY - Диффузия">
+                                    <Label styleClass="textWithTooltip" stylesheets="@../css/light.css" text="DY - Диффузия">
                                        <tooltip>
                                           <Tooltip text=" Коэффициент поперечной диффузии" />
                                        </tooltip>
@@ -71,7 +80,7 @@
                               </VBox>
                               <VBox>
                                  <children>
-                                    <Label styleClass="textWithTooltip" stylesheets="@css/light.css" text="K1 - Неконсервативность">
+                                    <Label styleClass="textWithTooltip" stylesheets="@../css/light.css" text="K1 - Неконсервативность">
                                        <tooltip>
                                           <Tooltip text="Коэффициент неконсервативности" />
                                        </tooltip>
@@ -136,7 +145,25 @@
                         </TilePane>
                      </content>
                   </TitledPane>
+                  <BorderPane styleClass="borderpane">
+                     <center>
+                        <Label text="Выпуска">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                     </center>
+                  </BorderPane>
                   <Accordion fx:id="accordionPlant" />
+                  <AnchorPane>
+                     <children>
+                        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#addTitledPanePipe" text="+" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <tooltip>
+                              <Tooltip text="Добавить выпуск" />
+                           </tooltip>
+                        </Button>
+                     </children>
+                  </AnchorPane>
                </children>
             </VBox>
          </content>

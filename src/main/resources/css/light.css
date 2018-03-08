@@ -7,3 +7,8 @@
     -fx-text-fill: blue;
     -fx-underline: true;
 }
+
+.borderpane{
+    -fx-border-color: yellow;
+    -fx-border-radius: 10px;
+}

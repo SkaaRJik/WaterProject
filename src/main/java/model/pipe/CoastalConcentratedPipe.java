@@ -1,5 +1,6 @@
 package model.pipe;
 
+import model.pipe.mode.Mode;
 import model.river.River;
 import utils.RiverMath;
 
@@ -15,15 +16,15 @@ public class CoastalConcentratedPipe extends BasePipe {
      * Конструткор для берегового сосредоточенного выпуска.
      * @param x расстояние от контрольного створа вдоль берега (в км);
      * @param coast берег (false - правый; true - левый );
-     * @param turnedOn режим выпуска (false - выключенный, true - включенный);
+     * @param mode режим выпуска;
      * @param concentartion концентрация примеси в стоках;
      * @param wastewaterConsumption расход сточных вод;
      */
-    public CoastalConcentratedPipe(double x, boolean coast, boolean turnedOn, double concentartion, double wastewaterConsumption ) {
+    public CoastalConcentratedPipe(double x, boolean coast, Mode mode, double concentartion, double wastewaterConsumption ) {
         this.x = x * 1000;  //Переводим км в м.
         this.endX = this.x;
         this.coast = coast;
-        this.turnedOn = turnedOn;
+        this.mode = mode;
         this.concentration = concentartion;
         this.wastewaterConsumption = wastewaterConsumption;
         this.initialDilution = 0;
@@ -33,7 +34,7 @@ public class CoastalConcentratedPipe extends BasePipe {
 
     @Override
     public void mergeWaste(double[][] river) {
-        river[columnLocation][rowLocation] = concentration;
+        if(this.mode.update()) { river[columnLocation][rowLocation] = concentration; }
     }
 
     @Override

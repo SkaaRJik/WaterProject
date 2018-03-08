@@ -18,7 +18,7 @@ import model.Model;
  * Шаблоне проектирования MVC:
  * <p>
  *      Model - {@link Model}
- *      View - {resources/sample.fxml}
+ *      View - {resources/MainWindow.fxml}
  *      Controller - {@link Controller}
  * </p>
  */
@@ -26,25 +26,24 @@ import model.Model;
 public class Main extends Application {
     /**
      * Инициализация окна приложения.
-     * Загружает sample.fxml (представление графического интерфейса).
+     * Загружает MainWindow.fxml (представление графического интерфейса).
      * Выводит окно приложения на экран
      * @param primaryStage
      * @throws Exception
      */
     @Override
     public void start(Stage primaryStage) throws Exception{
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("sample.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("view/MainWindow.fxml"));
 
         Parent root = loader.load();
 
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("Water");
         Scene scene = new Scene(root);
         scene.getStylesheets().add((getClass().getClassLoader().getResource("css/light.css")).toExternalForm());
         primaryStage.setScene(scene);
 
         Controller controller = loader.getController();
-        controller.fillAccordion(1);
-
+        controller.setScene(scene);
         primaryStage.show();
     }
 

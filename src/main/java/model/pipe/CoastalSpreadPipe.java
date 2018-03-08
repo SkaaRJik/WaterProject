@@ -19,9 +19,9 @@ public class CoastalSpreadPipe extends BasePipe{
      * Береговой распределенный выпуск.
      * @param x Координата начальной точки выпуска(км);
      * @param coast берег расположения: false - правый; true - левый;
+     * @param mode режим функционирования выброса
      * @param length длина распределенной части выпска(м);
      * @param padding расстояние между патрубками(м);
-     * @param turnedOn состояние выпуска: false - выключен; true - включен;
      * @param concentartion концентрация примеси в стоках (мг/л)
      * @param wastewaterConsumption расход сточных вод (мг<sup>3</sup>/с)
      */

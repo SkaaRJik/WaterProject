@@ -38,13 +38,21 @@ public class CoastalConcentratedPipe extends BasePipe {
     }
 
     @Override
-    public void putPipeOnRiver(double cellSizeX, double cellSizeY, int rows, int columnss) {
+    public void putPipeOnRiver(River riverInfo, double cellSizeX, double cellSizeY, int rows, int columnss) {
         this.columnLocation = (int)(this.x / cellSizeX);
          /* coast  false - правый берег; true - левый берег;  */
         if(this.coast == false) this.rowLocation = 0;
         else this.rowLocation = rows - 1;
+        this.calculateInitialDilution(riverInfo, rows);
     }
 
+    /**
+     * Инициализация {@link #initialDilution}
+     * Подсчитывает коэффициент начального разбавления для трубы.<br>
+     * Это значение будет сбрасываться в реку
+     * @param riverInfo информация о реке, введенная пользователем;
+     * @param rows количество ячеек вдоль реки;
+     */
     @Override
     public void calculateInitialDilution(River riverInfo, int rows) {
         double Ccp = RiverMath.averageImpurityConcentration(this.concentration,

@@ -19,7 +19,7 @@ public interface IPipe {
      * @param rows Количесвто рядов ячеек у реки
      * @param columns Количесвто столбцов ячеек у реки
      */
-    void putPipeOnRiver(double cellSizeX, double cellSizeY, int rows, int columns);
+    void putPipeOnRiver(River riverInfo, double cellSizeX, double cellSizeY, int rows, int columns);
 
     /**
      * Подсчитывает коэффициент начального разбавления для трубы.<br>

@@ -45,7 +45,7 @@ public abstract class BasePipe implements IPipe, Comparable<BasePipe> {
      * @param columns Количесвто столбцов ячеек у реки
      */
     @Override
-    public abstract void putPipeOnRiver(double cellSizeX, double cellSizeY, int rows, int columns);
+    public abstract void putPipeOnRiver(River riverInfo, double cellSizeX, double cellSizeY, int rows, int columns);
 
     /*Блок Геттеров и Сетеров */
     public void setX(double x) {

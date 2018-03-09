@@ -33,11 +33,10 @@ public class Model {
         this.riverInfo = river; //Сохраним информацию о реке
         this.pipes = pipes; //Сохраним трубы, которые используются в модели
         Arrays.sort(pipes); //Отсоритируем трубы в порядке удаленности от контрольного створа
-        calculateCellSize(); //Делим реку на сектора
+        this.calculateCellSize(); //Делим реку на сектора
         this.river = new double[this.rows][this.columns+1]; //По длине реки, берем одну ячейку на запас
-        for(BasePipe pipe : pipes){
-            pipe.putPipeOnRiver(this.cellSizeX, this.cellSizeY, this.rows, this.columns); //Определяем положение труб на модели
-            pipe.calculateInitialDilution(riverInfo, this.rows); //Определяем начальное разбавление для каждой трубы
+        for(BasePipe pipe : this.pipes){
+            pipe.putPipeOnRiver(this.riverInfo, this.cellSizeX, this.cellSizeY, this.rows, this.columns); //Определяем положение труб на модели
         }
     }
 
@@ -64,7 +63,7 @@ public class Model {
     /**
      * Запускает процесс моделирования процессов, происходящих на реке.
      * <hr>
-     * Запускать <b>ТОЛЬКО</b> после выполнения {@link #calculateCellSize()} и {@link BasePipe#putPipeOnRiver(double, double, int, int)}
+     * Запускать <b>ТОЛЬКО</b> после выполнения {@link #calculateCellSize()} и {@link BasePipe#putPipeOnRiver(River, double, double, int, int)}
      */
     public void runModelling(){
         while (true){
@@ -75,7 +74,6 @@ public class Model {
                 }
             }
         }
-
     }
 
     /**

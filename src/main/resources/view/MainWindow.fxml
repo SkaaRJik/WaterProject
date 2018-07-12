@@ -18,17 +18,17 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox stylesheets="@../css/light.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
+<VBox stylesheets="@../css/light.css" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
    <children>
       <MenuBar>
         <menus>
           <Menu mnemonicParsing="false" text="Файл">
             <items>
-              <MenuItem mnemonicParsing="false" text="Новый" />
-                  <MenuItem mnemonicParsing="false" text="Загрузить" />
-                  <MenuItem mnemonicParsing="false" text="Сохранить" />
+              <MenuItem mnemonicParsing="false" onAction="#cleanFields" text="Новый" />
+                  <MenuItem mnemonicParsing="false" onAction="#loadData" text="Загрузить" />
+                  <MenuItem mnemonicParsing="false" onAction="#saveData" text="Сохранить" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Выход" />
+                  <MenuItem mnemonicParsing="false" onAction="#exitProgram" text="Выход" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Инструменты">
@@ -38,7 +38,7 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Помощь">
             <items>
-              <MenuItem mnemonicParsing="false" text="О программе" />
+              <MenuItem mnemonicParsing="false" onAction="#showAbout" text="О программе" />
             </items>
           </Menu>
         </menus>
@@ -47,25 +47,28 @@
          <content>
             <VBox>
                <children>
-                  <TitledPane text="Данные о реке">
+                  <TitledPane fx:id="riverTitlePane" text="Данные о реке">
                      <content>
                         <TilePane hgap="5.0" prefColumns="3" tileAlignment="TOP_LEFT" vgap="5.0">
                            <children>
                               <VBox>
                                  <children>
-                                    <Label text="LB - Средняя ширина" />
+                                    <Label text="LB - Средняя ширина (м.)" />
                                     <TextField fx:id="textFieldRiverWidth" />
                                  </children>
                               </VBox>
                               <VBox>
                                  <children>
-                                    <Label text="LH - Средняя глубина" />
+                                    <Label text="LH - Средняя глубина (м.)" />
                                     <TextField fx:id="textFieldRiverDepth" />
                                  </children>
                               </VBox>
                               <VBox>
                                  <children>
-                                    <Label text="VS - Сред. скорость течения" />
+                                    <Label styleClass="textWithTooltip" text="VS - Сред. скорость течения">
+                                       <tooltip>
+                                          <Tooltip text="Средняя скорость течения (м/c)" />
+                                       </tooltip></Label>
                                     <TextField fx:id="textFieldFlowSpeed" />
                                  </children>
                               </VBox>
@@ -94,7 +97,7 @@
                         </TilePane>
                      </content>
                   </TitledPane>
-                  <TitledPane text="Вещества">
+                  <TitledPane fx:id="substanceTitlePane" text="Вещества">
                      <content>
                         <TilePane hgap="5.0" prefColumns="3" vgap="5.0">
                            <children>
@@ -120,16 +123,10 @@
                                  <children>
                                     <Label styleClass="textWithTooltip" text="Фоновая концентрация">
                                        <tooltip>
-                                          <Tooltip text="Фоновая концентрация в точках выпуска" />
+                                          <Tooltip text="Фоновая концентрация в реке" />
                                        </tooltip>
                                     </Label>
                                     <TextField fx:id="textFieldConcentration" />
-                                 </children>
-                              </VBox>
-                              <VBox>
-                                 <children>
-                                    <Label text="Кол-во створов выпуска" />
-                                    <TextField fx:id="textFieldNumberOfPipes" />
                                  </children>
                               </VBox>
                               <VBox>
@@ -139,7 +136,7 @@
                                           <Tooltip text="Количество цифр после запятой {0, 1, 2, 3 ...}" />
                                        </tooltip>
                                     </Label>
-                                    <TextField fx:id="textFieldOccuracy" />
+                                    <TextField fx:id="textFieldRound" text="4" />
                                  </children>
                               </VBox>
                            </children>
@@ -172,7 +169,7 @@
                   </AnchorPane>
                   <BorderPane>
                      <center>
-                        <Button mnemonicParsing="false" onAction="#calculate" text="Рассчет" />
+                        <Button mnemonicParsing="false" onAction="#calculate" text="Расчет" />
                      </center>
                   </BorderPane>
                </children>

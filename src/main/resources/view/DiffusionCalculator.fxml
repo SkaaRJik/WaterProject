@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="398.0" prefWidth="262.0" stylesheets="@../css/light.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.diffusionCalculatorWindow.DiffusionController">
+<VBox prefHeight="398.0" prefWidth="262.0" stylesheets="@../css/light.css" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.diffusionCalculatorWindow.DiffusionController">
    <children>
       <VBox>
          <children>
@@ -32,7 +32,7 @@
       </VBox>
       <BorderPane>
          <center>
-            <Button mnemonicParsing="false" onAction="#calculate" text="Рассчет">
+            <Button mnemonicParsing="false" onAction="#calculate" text="Расчет">
                <BorderPane.margin>
                   <Insets bottom="5.0" top="5.0" />
                </BorderPane.margin>

@@ -6,7 +6,8 @@ package model.pipe.mode;
 public abstract class Mode implements IMode{
 
     @Override
-    public abstract boolean update();
+    public abstract boolean update(double currentTime);
 
-
+    @Override
+    public abstract String toString();
 }

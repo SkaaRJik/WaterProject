@@ -13,7 +13,6 @@ public class CoastalSpreadPipe extends BasePipe{
     double padding;
     int rowLocation;
     int[] columnsLocation;
-    int cellsOccupied = 0;
 
     /**
      * Береговой распределенный выпуск.
@@ -28,7 +27,7 @@ public class CoastalSpreadPipe extends BasePipe{
     public CoastalSpreadPipe(double x, boolean coast, Mode mode, double length, double padding, double concentartion, double wastewaterConsumption ) {
         this.x = x * 1000; //Переводим км в м.
         this.endX = this.x + length; //Помечаем конец трубы
-        this.coast = coast;
+        this.bank = coast;
         this.length = length;
         this.padding = padding;
         this.mode = mode;
@@ -38,53 +37,45 @@ public class CoastalSpreadPipe extends BasePipe{
 
 
 
-    @Override
-    public void mergeWaste(double[][] river) {
-        if(this.mode.update()) {
-            for (int i = 0; i < this.cellsOccupied; i++) {
-                river[columnsLocation[i]][rowLocation] = this.initialDilution;
-            }
-        }
-    }
 
     @Override
     public void putPipeOnRiver(River riverInfo, double cellSizeX, double cellSizeY, int rows, int columns) {
-        int startIndex = (int)(this.x / cellSizeX);
+        int startIndex = (int)Math.ceil(this.x / cellSizeX);
 
         /* Упрощенная модель рассчета */
-        int endIndex = (int) ((this.endX) / cellSizeX);
-        this.cellsOccupied = endIndex - startIndex;
+        int endIndex = (int) Math.ceil((this.endX) / cellSizeX);
+        this.cellsOccupied = (endIndex - startIndex)+1;
         this.columnsLocation = new int[this.cellsOccupied];
         for (int i = 0; i < cellsOccupied; i++) {
             this.columnsLocation[i] = startIndex+i;
         }
-        /*________________________________ */
 
-        /*  Усложненная модель рассчета, доделать потом
-        int numberOfMiniPipes = (int) (length / padding);
-        int scaleOfPadding = (int)(this.length/cellSizeX);
-        for (int i = 1; i < numberOfMiniPipes; i++) {
+         /* bank  false - правый берег; true - левый берег;  */
+        this.rowLocation = (this.bank) ? 1 : rows - 2;
 
-        }
-        */
-         /* coast  false - правый берег; true - левый берег;  */
-        if(this.coast == false) this.rowLocation = 0;
-        else this.rowLocation = rows - 1;
-        this.calculateInitialDilution(riverInfo, rows);
     }
 
-    /**
-     * Инициализация {@link #initialDilution}
-     * Подсчитывает коэффициент начального разбавления для трубы.<br>
-     * Это значение будет сбрасываться в реку
-     * @param riverInfo информация о реке, введенная пользователем;
-     * @param rows количество ячеек вдоль реки;
-     */
     @Override
-    public void calculateInitialDilution(River riverInfo, int rows) {
-        double Ccp = RiverMath.averageImpurityConcentration(this.concentration,
-                riverInfo.backgroundConcentration, this.wastewaterConsumption, riverInfo.riverWidth,
-                riverInfo.riverDepth,riverInfo.flowSpeed);
-        this.initialDilution = (Ccp * rows - riverInfo.backgroundConcentration * rows - this.cellsOccupied) / this.cellsOccupied;
+    public boolean isPipeLocated(int i, int j) {
+        for (int k = this.cellsOccupied-1; k >= 0; k--) {
+            if(i  == this.columnsLocation[k] && j == this.rowLocation) return true;
+        }
+        return false;
+    }
+
+
+    @Override
+    public String toString() {
+
+        String strSuper = super.toString();
+        StringBuilder str = new StringBuilder();
+        str.append("Тип выпуска: Береговой распределенный\n");
+        str.append("\tДлина распределенной части выпуска (м): " + this.length + "\n");
+        str.append("\tРасстояние между патрубками (м): " + this.padding + "\n");
+        str.append(strSuper);
+
+
+        return str.toString();
+
     }
 }

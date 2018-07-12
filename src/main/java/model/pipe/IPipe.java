@@ -8,9 +8,12 @@ import model.river.River;
 public interface IPipe {
     /**
      * Сливает сточные воды в реку, согласно своему положению на реке
-     * @param river модель, в ячейки которой сливаются воды.
+     * @param riverAverageConsumption расход реки
+     * @param currentConcentration текущая концентрация в ячейке
+     * @param currentTime текущее время моделирования
+     * @return новая концентрация с расчетом сброса
      */
-    void mergeWaste(double[][] river);
+    double mergeWaste(double riverAverageConsumption, double currentConcentration, double currentTime);
 
     /**
      * Масштабирует и устанавливает трубу на реку.
@@ -30,6 +33,13 @@ public interface IPipe {
      * @param rows количество ячеек вдоль реки
      */
     void calculateInitialDilution(River riverInfo, int rows);
+
+    double getInitialDilution();
+
+    boolean isPipeLocated(int i, int j);
+
+    double getFirstLaunchConcentration();
+
 
 
 

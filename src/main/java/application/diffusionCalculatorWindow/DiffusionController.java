@@ -1,5 +1,7 @@
 package application.diffusionCalculatorWindow;
 
+import application.ApplicationFactory;
+import application.ValidationChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -40,6 +42,7 @@ public class DiffusionController {
     public void init(River riverInfo){
         this.riverInfo = riverInfo;
         if(riverInfo.riverDepth >= 0){ this.textFieldRiverDepth.setText(String.valueOf(riverInfo.riverDepth)); }
+        textFieldRiverDepth.textProperty().addListener(new ValidationChangeListener(textFieldRiverDepth));
 
         /*Подготовка контейнеров с текстбоксами и лейблами внутри
         * для дальнейшего использования в ChoiceBox логике*/
@@ -54,6 +57,7 @@ public class DiffusionController {
         TextField textFieldRiverWidth = new TextField();
         if(riverInfo.riverWidth >= 0) { textFieldRiverWidth.setText(String.valueOf(riverInfo.riverWidth));}
         this.componentsOfGUI.put("textFieldRiverWidth", textFieldRiverWidth);
+        textFieldRiverWidth.textProperty().addListener(new ValidationChangeListener(textFieldRiverWidth));
         VBox riverWidthContainer = new VBox(labelRiverWidth, textFieldRiverWidth);
 
         Label labelFlowSpeed = new Label("Скорость (м/c)");
@@ -61,6 +65,7 @@ public class DiffusionController {
         Tooltip.install(labelFlowSpeed, new Tooltip("Средняя скорость течения реки (м/c)"));
         TextField textFieldFlowSpeed = new TextField();
         if(riverInfo.flowSpeed >= 0) { textFieldFlowSpeed.setText(String.valueOf(riverInfo.flowSpeed)); }
+        textFieldFlowSpeed.textProperty().addListener(new ValidationChangeListener(textFieldFlowSpeed));
         this.componentsOfGUI.put("textFieldFlowSpeed", textFieldFlowSpeed);
         VBox flowSpeedContainer = new VBox(labelFlowSpeed, textFieldFlowSpeed);
 
@@ -68,18 +73,21 @@ public class DiffusionController {
         labelDeviation.setId("textWithTooltip");
         Tooltip.install(labelDeviation, new Tooltip("Уклон свободной поверхности реки"));
         TextField textFieldDeviation = new TextField();
+        textFieldDeviation.textProperty().addListener(new ValidationChangeListener(textFieldDeviation));
         VBox deviationContainer = new VBox(labelDeviation, textFieldDeviation);
 
         Label labelTortuosity = new Label("Извилистость");
         labelTortuosity.setId("textWithTooltip");
         Tooltip.install(labelTortuosity, new Tooltip("Коэффициент извилистости русла"));
         TextField textFieldTortuosity = new TextField();
+        textFieldTortuosity.textProperty().addListener(new ValidationChangeListener(textFieldTortuosity));
         VBox tortuosityContainer = new VBox(labelTortuosity, textFieldTortuosity);
 
         Label labelRoughness = new Label("Шероховатость");
         labelRoughness.setId("textWithTooltip");
         Tooltip.install(labelRoughness, new Tooltip("Коэффициент шероховатости русла"));
         TextField textFieldRoughness = new TextField();
+        textFieldRoughness.textProperty().addListener(new ValidationChangeListener(textFieldRoughness));
         VBox roughnessContainer = new VBox(labelRoughness, textFieldRoughness);
         /*_________________________________________________________________*/
 
@@ -155,116 +163,66 @@ public class DiffusionController {
         });
     }
 
-    /**
-     * Проверяет правильность заполнения полей.
-     * Если поле заполненно неправильно, показывает сообщение об ошибке.
-     * @return true - если поля валидны; false - если найдена ошибка.
-     */
-    private boolean checkField(){
-        if(textFieldRiverDepth.getText().isEmpty()){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Ошибка");
-            alert.setHeaderText(null);
-            alert.setContentText("Поле \"Глубина (м)\" не заполнено");
-            alert.showAndWait();
-            return false;
-        }
-        if(!Validator.isOnlyNumbers(textFieldRiverDepth.getText())){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Ошибка");
-            alert.setHeaderText(null);
-            alert.setContentText("Поле \"Глубина (м)\" должно содержать только цифры");
-            alert.showAndWait();
-            return false;
-        }
-
-
-        for (Map.Entry<String, Node> entry: componentsOfGUI.entrySet()) {
-            TextField textTemp = (TextField) entry.getValue();
-
-            if(textTemp.getText().isEmpty()){
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Ошибка");
-                alert.setHeaderText(null);
-                VBox vbox = (VBox) textTemp.getParent();
-                Label label = (Label) vbox.getChildren().get(0);
-                alert.setContentText("Поле \"" +label.getText()+ "\" пустое");
-                alert.showAndWait();
-                return false;
-            }
-
-            if(!Validator.isOnlyNumbers(textTemp.getText())){
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Ошибка");
-                alert.setHeaderText(null);
-                VBox vbox = (VBox) textTemp.getParent();
-                Label label = (Label) vbox.getChildren().get(0);
-                alert.setContentText("Поле " +label.getText()+ " должно содержать только !");
-                alert.showAndWait();
-                return false;
-            }
-        }
-        return true;
-    }
-
 
     /**
      * Метод, решающий задачу, согласно введеннымы даннымы от пользователя и выводит результат в TextBox
      */
     public void calculate() {
 
-        if(!checkField()) return;
-        switch (this.choiceBoxRiver.getValue()) {
-            case "Большая река (Метод Банзала)": {
-                double depth = Double.parseDouble(textFieldRiverDepth.getText().replace(',', '.'));
-                TextField tempTextField = (TextField) componentsOfGUI.get("textFieldFlowSpeed");
-                double flowSpeed = Double.parseDouble(tempTextField.getText().replace(',', '.'));
-                tempTextField = (TextField) componentsOfGUI.get("textFieldRiverWidth");
-                double width = Double.parseDouble(tempTextField.getText().replace(',', '.'));
-                textFieldResult.setText(String.valueOf(RiverMath.methodBanzal(depth, flowSpeed, width)));
-                break;
+        try {
+            switch (this.choiceBoxRiver.getValue()) {
+                case "Большая река (Метод Банзала)": {
+                    double depth = Double.parseDouble(textFieldRiverDepth.getText().replace(',', '.'));
+                    TextField tempTextField = (TextField) componentsOfGUI.get("textFieldFlowSpeed");
+                    double flowSpeed = Double.parseDouble(tempTextField.getText().replace(',', '.'));
+                    tempTextField = (TextField) componentsOfGUI.get("textFieldRiverWidth");
+                    double width = Double.parseDouble(tempTextField.getText().replace(',', '.'));
+                    textFieldResult.setText(String.valueOf(RiverMath.methodBanzal(depth, flowSpeed, width)));
+                    break;
+                }
+                case "Малая река (Метод Элдера)": {
+                    double depth = Double.parseDouble(textFieldRiverDepth.getText().replace(',', '.'));
+                    TextField tempTextField = (TextField) componentsOfGUI.get("textFieldDeviation");
+                    double deviation = Double.parseDouble(tempTextField.getText().replace(',', '.'));
+                    tempTextField = (TextField) componentsOfGUI.get("textFieldRiverWidth");
+                    double width = Double.parseDouble(tempTextField.getText().replace(',', '.'));
+                    textFieldResult.setText(String.valueOf(RiverMath.methodElder(deviation, depth, width)));
+                    break;
+                }
+                case "Равнина река (Метод Потапова)": {
+                    double depth = Double.parseDouble(textFieldRiverDepth.getText().replace(',', '.'));
+                    TextField tempTextField = (TextField) componentsOfGUI.get("textFieldFlowSpeed");
+                    double flowSpeed = Double.parseDouble(tempTextField.getText().replace(',', '.'));
+                    textFieldResult.setText(String.valueOf(RiverMath.methodPotapov(depth, flowSpeed)));
+                    break;
+                }
+                case "Естественные течения (Комбинированный метод)": {
+                    double depth = Double.parseDouble(textFieldRiverDepth.getText().replace(',', '.'));
+                    TextField tempTextField = (TextField) componentsOfGUI.get("textFieldFlowSpeed");
+                    double flowSpeed = Double.parseDouble(tempTextField.getText().replace(',', '.'));
+                    tempTextField = (TextField) componentsOfGUI.get("textFieldRiverWidth");
+                    double width = Double.parseDouble(tempTextField.getText().replace(',', '.'));
+                    tempTextField = (TextField) componentsOfGUI.get("textFieldTortuosity");
+                    double tortuosity = Double.parseDouble(tempTextField.getText().replace(',', '.'));
+                    tempTextField = (TextField) componentsOfGUI.get("textFieldRoughness");
+                    double roughness = Double.parseDouble(tempTextField.getText().replace(',', '.'));
+                    textFieldResult.setText(String.valueOf(RiverMath.combinedMethod(flowSpeed,
+                            width, tortuosity, roughness, depth)));
+                    break;
+                }
+                case "Естественные течения (Метод Карушева)": {
+                    double depth = Double.parseDouble(textFieldRiverDepth.getText().replace(',', '.'));
+                    TextField tempTextField = (TextField) componentsOfGUI.get("textFieldFlowSpeed");
+                    double flowSpeed = Double.parseDouble(tempTextField.getText().replace(',', '.'));
+                    tempTextField = (TextField) componentsOfGUI.get("textFieldDeviation");
+                    double deviation = Double.parseDouble(tempTextField.getText().replace(',', '.'));
+                    textFieldResult.setText(String.valueOf(RiverMath.methodKarushev(depth, flowSpeed, deviation)));
+                    break;
+                }
             }
-            case "Малая река (Метод Элдера)": {
-                double depth = Double.parseDouble(textFieldRiverDepth.getText().replace(',', '.'));
-                TextField tempTextField = (TextField) componentsOfGUI.get("textFieldDeviation");
-                double deviation = Double.parseDouble(tempTextField.getText().replace(',', '.'));
-                tempTextField = (TextField) componentsOfGUI.get("textFieldRiverWidth");
-                double width = Double.parseDouble(tempTextField.getText().replace(',', '.'));
-                textFieldResult.setText(String.valueOf(RiverMath.methodElder(deviation, depth, width)));
-                break;
-            }
-            case "Равнина река (Метод Потапова)": {
-                double depth = Double.parseDouble(textFieldRiverDepth.getText().replace(',', '.'));
-                TextField tempTextField = (TextField) componentsOfGUI.get("textFieldFlowSpeed");
-                double flowSpeed = Double.parseDouble(tempTextField.getText().replace(',', '.'));
-                textFieldResult.setText(String.valueOf(RiverMath.methodPotapov(depth, flowSpeed)));
-                break;
-            }
-            case "Естественные течения (Комбинированный метод)": {
-                double depth = Double.parseDouble(textFieldRiverDepth.getText().replace(',', '.'));
-                TextField tempTextField = (TextField) componentsOfGUI.get("textFieldFlowSpeed");
-                double flowSpeed = Double.parseDouble(tempTextField.getText().replace(',', '.'));
-                tempTextField = (TextField) componentsOfGUI.get("textFieldRiverWidth");
-                double width = Double.parseDouble(tempTextField.getText().replace(',', '.'));
-                tempTextField = (TextField) componentsOfGUI.get("textFieldTortuosity");
-                double tortuosity = Double.parseDouble(tempTextField.getText().replace(',', '.'));
-                tempTextField = (TextField) componentsOfGUI.get("textFieldRoughness");
-                double roughness = Double.parseDouble(tempTextField.getText().replace(',', '.'));
-                textFieldResult.setText(String.valueOf(RiverMath.combinedMethod(flowSpeed,
-                        width, tortuosity, roughness, depth)));
-                break;
-            }
-            case "Естественные течения (Метод Карушева)": {
-                double depth = Double.parseDouble(textFieldRiverDepth.getText().replace(',', '.'));
-                TextField tempTextField = (TextField) componentsOfGUI.get("textFieldFlowSpeed");
-                double flowSpeed = Double.parseDouble(tempTextField.getText().replace(',', '.'));
-                tempTextField = (TextField) componentsOfGUI.get("textFieldDeviation");
-                double deviation = Double.parseDouble(tempTextField.getText().replace(',', '.'));
-                textFieldResult.setText(String.valueOf(RiverMath.methodKarushev(depth, flowSpeed, deviation)));
-                break;
-            }
+        } catch (NumberFormatException e) {
+            ApplicationFactory.getInstance().getAlert("Все поля должны быть заполнены").showAndWait();
         }
-
 
 
     }

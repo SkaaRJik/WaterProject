@@ -13,5 +13,10 @@ public class StationaryMode extends Mode {
      * @return true
      */
     @Override
-    public boolean update() {return true;}
+    public boolean update(double currentTime) {return true;}
+
+    @Override
+    public String toString() {
+        return "Режим работы: Стационарный\n";
+    }
 }

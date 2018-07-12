@@ -16,44 +16,40 @@ public class ChanneledConcentratedPipe extends BasePipe {
     public ChanneledConcentratedPipe(double x, boolean coast, Mode mode, double length, double concentartion, double wastewaterConsumption){
         this.x = x * 1000;
         this.endX = this.x;
-        this.coast = coast;
+        this.bank = coast;
         this.mode = mode;
         this.length = length;
         this.concentration = concentartion;
         this.wastewaterConsumption = wastewaterConsumption;
+        this.cellsOccupied = 1;
     }
 
-    /**
-     * Сливает сточные воды в реку, согласно своему положению на реке
-     * @param river модель, в ячейки которой сливаются воды.
-     */
-    @Override
-    public void mergeWaste(double[][] river) {
-        river[rowLocation][columnLocation] = this.initialDilution;
-    }
 
-    /**
-     * Инициализация {@link #initialDilution}
-     * Подсчитывает коэффициент начального разбавления для трубы.<br>
-     * Это значение будет сбрасываться в реку
-     * @param riverInfo информация о реке, введенная пользователем;
-     * @param rows количество ячеек вдоль реки;
-     */
-    @Override
-    public void calculateInitialDilution(River riverInfo, int rows) {
-        double Ccp = RiverMath.averageImpurityConcentration(this.concentration,
-                riverInfo.backgroundConcentration, this.wastewaterConsumption, riverInfo.riverWidth,
-                riverInfo.riverDepth,riverInfo.flowSpeed);
-        this.initialDilution = Ccp * rows - riverInfo.backgroundConcentration * rows - 1;
-    }
+
 
     @Override
     public void putPipeOnRiver(River riverInfo, double cellSizeX, double cellSizeY, int rows, int columns) {
-        this.columnLocation = (int)(this.x / cellSizeX) - 1;
-        if(this.columnLocation < 0) this.columnLocation = 0;
-         /* coast  false - правый берег; true - левый берег;  */
-        if(this.coast == false) this.rowLocation = (int)(this.length / cellSizeY);
-        else this.rowLocation = rows - (int)(this.length / cellSizeY) -1;
-        this.calculateInitialDilution(riverInfo, rows);
+
+        this.columnLocation = (int)Math.ceil(this.x / cellSizeX);
+         /* bank  false - правый берег; true - левый берег;  */
+        this.rowLocation = (int)Math.ceil(this.length/cellSizeY)+1;
+        this.rowLocation  = (this.bank) ? rows - this.rowLocation : this.rowLocation;
+    }
+
+    @Override
+    public boolean isPipeLocated(int i, int j) {
+        if(i  == this.columnLocation && j == this.rowLocation) return true;
+        return false;
+    }
+
+    @Override
+    public String toString() {
+
+        String strSuper = super.toString();
+        StringBuilder str = new StringBuilder();
+        str.append("Тип выпуска: Русловой сосредоточенный\n");
+        str.append("\tРасстояние от берега до точки выпуска (м): " + this.length + "\n");
+        str.append(strSuper);
+        return str.toString();
     }
 }

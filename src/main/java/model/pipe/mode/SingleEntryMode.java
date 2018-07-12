@@ -22,14 +22,18 @@ public class SingleEntryMode extends Mode {
      * @return true - труба работает, false - труба остановилась.
      */
     @Override
-    public boolean update() {
-        if(this.status) {
-            if (currentTime >= timeOfWorking) {
-                this.status = false;
-                return this.status;
-            }
-            currentTime++;
+    public boolean update(double currentTime) {
+        if (timeOfWorking >= timeOfWorking) {
+            return false;
         }
-        return this.status;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder("");
+        str.append("Режим работы: Однократного действия\n");
+        str.append("\tВремя работы(мин): "+this.timeOfWorking/60 + "\n");
+        return str.toString();
     }
 }

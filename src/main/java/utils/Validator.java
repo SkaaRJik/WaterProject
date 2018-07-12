@@ -26,7 +26,7 @@ public class Validator {
      * @return true - if field is correct, otherwise - false
      */
    public static boolean isOnlyNumbers(String string){
-       Pattern p = Pattern.compile("[а-яА-ЯёЁa-zA-Z]", Pattern.UNICODE_CHARACTER_CLASS);
+       Pattern p = Pattern.compile("[а-яА-ЯёЁa-zA-Z\\s]", Pattern.UNICODE_CHARACTER_CLASS);
        Matcher m = p.matcher(string);
        if (m.find()) return false;
 

@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import model.Model;
 
@@ -31,19 +32,23 @@ public class Main extends Application {
      * @param primaryStage
      * @throws Exception
      */
+
+    Scene scene;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("view/MainWindow.fxml"));
 
         Parent root = loader.load();
 
-        primaryStage.setTitle("Water");
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add((getClass().getClassLoader().getResource("css/light.css")).toExternalForm());
-        primaryStage.setScene(scene);
+        primaryStage.setTitle("Water Consumption");
+        this.scene = new Scene(root);
+        this.scene.getStylesheets().add((getClass().getClassLoader().getResource("css/light.css")).toExternalForm());
+        primaryStage.setScene(this.scene);
+        primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("images/ico.ico")));
 
         Controller controller = loader.getController();
-        controller.setScene(scene);
+        controller.init();
         primaryStage.show();
     }
 

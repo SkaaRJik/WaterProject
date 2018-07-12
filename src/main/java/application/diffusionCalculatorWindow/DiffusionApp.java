@@ -14,8 +14,8 @@ import model.river.River;
  */
 public class DiffusionApp {
     Stage stage;
-
-    public DiffusionApp(Scene parrent, River riverInfo) throws Exception{
+    DiffusionController controller;
+    public DiffusionApp(Scene parent, River riverInfo) throws Exception{
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("view/DiffusionCalculator.fxml"));
         Parent root = loader.load();
         this.stage = new Stage();
@@ -25,9 +25,13 @@ public class DiffusionApp {
         this. stage.setScene(scene);
 
         this.stage.initModality(Modality.NONE);
-        this.stage.initOwner(parrent.getWindow());
-        DiffusionController controller = loader.getController();
+        this.stage.initOwner(parent.getWindow());
+        controller = loader.getController();
         controller.init(riverInfo);
+    }
+
+    public void updateData(River riverInfo){
+        this.controller.init(riverInfo);
     }
 
     public void show(){

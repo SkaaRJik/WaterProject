@@ -16,4 +16,13 @@ public class River {
       this.riverDepth = riverDepth;
       this.flowSpeed = flowSpeed;
    }
+
+   public River(double riverWidth, double riverDepth, double backgroundConcentration, double diffusion, double flowSpeed, double coefficientOfNonConservatism) {
+      this.riverWidth = riverWidth;
+      this.riverDepth = riverDepth;
+      this.backgroundConcentration = backgroundConcentration;
+      this.diffusion = diffusion;
+      this.flowSpeed = flowSpeed;
+      this.coefficientOfNonConservatism = coefficientOfNonConservatism;
+   }
 }

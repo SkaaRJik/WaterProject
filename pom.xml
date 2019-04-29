@@ -6,7 +6,7 @@
 
     <groupId>ru.filippov</groupId>
     <artifactId>WaterProject</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>2.0</version>
     <packaging>jar</packaging>
 
     <build>

@@ -17,7 +17,7 @@ import java.io.IOException;
 public class ResultWindow {
     Stage stage;
     ResultController controller;
-    public ResultWindow(Scene parent, Model model) {
+    public ResultWindow(Scene parent) {
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("view/ResultWindow.fxml"));
         Parent root = null;
         try {
@@ -35,16 +35,20 @@ public class ResultWindow {
         this.stage.initModality(Modality.NONE);
         this.stage.initOwner(parent.getWindow());
         controller = loader.getController();
-        this.controller.init(model);
+        controller.init();
     }
 
     public void show(){
+
+        this.controller.startTrain();
         this.stage.showAndWait();
+
     }
 
     public void updateData(Model model){
         this.controller.updateModel(model);
     }
+
 
 
 }

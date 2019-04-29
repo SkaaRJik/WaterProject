@@ -21,7 +21,7 @@ public class TimeChooserWindow {
 
 
 
-    public TimeChooserWindow(Scene parent, double lenghtOfTheRiver, double averageFlowSpeed) {
+    public TimeChooserWindow(Scene parent) {
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("view/TimeChooserWindow.fxml"));
         Parent root = null;
         try {
@@ -38,7 +38,7 @@ public class TimeChooserWindow {
         this.stage.initModality(Modality.NONE);
         this.stage.initOwner(parent.getWindow());
         controller = loader.getController();
-        this.controller.init( lenghtOfTheRiver,  averageFlowSpeed);
+        this.controller.init( );
     }
 
     public void show(){
@@ -57,4 +57,11 @@ public class TimeChooserWindow {
         return this.controller.getEndTime();
     }
 
+    public boolean wasClosed(){
+        return !this.controller.getStatus();
+    }
+
+    public double getSpliceDt() {
+        return this.controller.getSplitDt();
+    }
 }

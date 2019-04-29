@@ -16,3 +16,7 @@
 .separatorCustom{
     -fx-background-color: black;
 }
+
+.teble-view:waste{
+    -fx-background-color: red;
+}

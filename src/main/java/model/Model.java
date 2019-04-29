@@ -1,16 +1,22 @@
 package model;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import model.river.River;
 import model.pipe.BasePipe;
 import model.substance.Substance;
 import utils.RiverMath;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Класс, овечающий за решение задачи
  */
-public class Model {
+public class Model implements Runnable{
 
     /**
      * Информация о реке, заданная пользователем<br>
@@ -24,7 +30,11 @@ public class Model {
      */
     BasePipe[] pipes;
     Substance substance;
-    double[][][] river; //Поле для моделирования
+    Double[][] riverNow; //Поле для моделирования
+    Double[][] riverBefore;
+    DoubleProperty status = new SimpleDoubleProperty(0);
+
+    double averageConcentrationOnCP = 0;
 
     int rows = 12; //Количество рядов, на которое разделена река по ширине (10 ячеек + 2 на берега)
     int columns = 0; //Количество колоннок, на которое разделена река по длине
@@ -47,14 +57,22 @@ public class Model {
 
     int round;
 
-    Double CMAX;
+    ObservableList<Double[]> results = FXCollections.observableArrayList();
+
+    Double CMAX = -1.0;
     Double degreeOfMixing;
     Double dilutionRatio;
     Double CMAXDevidedByPDK;
     Double NDS;
     Double CCTD;
 
-    public Model(River river, BasePipe[] pipes, Substance substance, int round, double endTime, double dt) {
+    Double[] riverMetres;
+
+    double splitDt;
+    private List<Double[][]> splits;
+
+
+    public Model(River river, BasePipe[] pipes, Substance substance, int round, double endTime, double dt, double splitDt) {
         this.riverInfo = river; //Сохраним информацию о реке
         this.pipes = pipes; //Сохраним трубы, которые используются в модели
         this.endTime = endTime; //Сохраняем конечное время моделирования
@@ -64,16 +82,18 @@ public class Model {
         Arrays.sort(pipes); //Отсоритируем трубы в порядке удаленности от контрольного створа
         this.calculateCellSize(); //Делим реку на сектора
         //this.river = new double[this.columns][this.rows][this.timeSlices]; //Длину реки берем на 2 ячейку больше (для рассчетов)
-        this.river = new double[this.columns+2][this.rows][this.timeSlices]; //Длину реки берем на 2 ячейку больше (для рассчетов)
+        this.riverNow = new Double[this.columns+2][this.rows];
+        this.riverBefore = new Double[this.columns+2][this.rows];
         H = new double[columns+2][rows];
         for (int i = 0; i < this.columns+2; i++)
             for (int j = 0; j < this.rows; j++) {
                 if (j == 0 || j == rows - 1) H[i][j] = 0; //берега
                     else H[i][j] = this.riverInfo.riverDepth;
 
-                for (int k = 0; k < this.timeSlices; k++) {
-                    this.river[i][j][k] = this.riverInfo.backgroundConcentration;
-                }
+
+                    this.riverBefore[i][j] = this.riverInfo.backgroundConcentration;
+                    this.riverNow[i][j] = this.riverInfo.backgroundConcentration;
+
             }
         for (int i = 0; i < this.rows-2; i++) {
             this.Diffuy[i] = this.riverInfo.diffusion;
@@ -82,7 +102,32 @@ public class Model {
         for(BasePipe pipe : this.pipes){
             pipe.putPipeOnRiver(this.riverInfo, this.dx, this.cellSizeY, this.rows, this.columns); //Определяем положение труб на модели
         }
-        this.process(this.endTime);
+
+        this.splitDt = splitDt;
+
+        if(splitDt <= this.endTime){
+            this.splits = new ArrayList<Double[][]>((int)Math.ceil(this.endTime / splitDt)+1);
+        }
+
+
+        this.riverMetres = new Double[columns + 2];
+        for (int i = 0; i < this.columns + 2; i++) {
+            this.riverMetres[i]=(i*dx);
+        }
+
+
+
+
+    }
+
+    private Double[][] createRiver() {
+        Double[][] river = new Double[this.columns+2][this.rows];
+        for (int i = 0; i < this.columns + 2; i++){
+            for (int j = 0; j < this.rows; j++) {
+                river[i][j] = this.riverInfo.backgroundConcentration;
+            }
+        }
+        return river;
     }
 
 
@@ -124,15 +169,60 @@ public class Model {
     private void process(double aTime){
         int limk = (int)Math.floor(aTime / dt); // предельный номер кадра. может быть от 1 и выше, т.к. самый первый aTime = dt
         this.currentTimeSlice=1;     aTime = dt;
+        if(splits!=null){
+            splits.add(createRiver());
+        }
         while (this.currentTimeSlice<=limk){
-            this.oneStep(aTime);
-
+            this.oneStep(aTime, limk);
+            this.status.setValue(aTime/limk);
             aTime += dt;
             this.currentTimeSlice = (int)Math.floor(aTime / dt); //номер кадра.
+
         }
+        this.status.setValue(1.0);
+        this.calculateParametres();
     }
 
-    private void oneStep(double aTime){ // из кадра aTime-dt   получает кадр aTime
+    private void oneStep(double aTime, double maxSlices){ // из кадра aTime-dt   получает кадр aTime
+        //dx=?? может быть меньше на последнем шаге
+        Double[] result = new Double[rows-1];
+        Double[][] split = null;
+        result[0] = aTime;
+        double averageRow = 0;
+        if(aTime % splitDt == 0) {
+            if (splits != null) {
+                split = new Double[this.columns+1][rows-2];
+                this.splits.add(split);
+            }
+        }
+        for (int i = this.columns; i >= 0; i--){
+
+            for (int j = 1; j < rows-1; j++){
+                double c1 = this.riverBefore[i + 1][j + 1];
+                double c2 = this.riverBefore[i + 1][j];
+                double c3 = this.riverBefore[i + 1][j - 1];
+                this.riverNow[i][j] = this.getNewConcentration(i, j, c1 , dy[j + 1], c2, dy[j], c3,
+                        H[i+1][j+1],H[i+1][j],H[i+1][j-1],H[i][j]); // Концентрация в узле = по 3 узлам предыдущего кадра
+                //System.out.print(this.river[i][j][this.currentTimeSlice] + " ");
+                if(i == 0){
+                    CMAX = Math.max(CMAX, this.riverNow[i][j]);
+                    averageRow += this.riverNow[i][j];
+                    result[j] = this.riverNow[i][j];
+                }
+                if(split != null) {
+                    split[i][j-1] = this.riverNow[i][j];
+                }
+
+            }
+        }
+
+        this.averageConcentrationOnCP += (averageRow/rows);
+        this.results.add(result);
+        this.riverBefore = this.riverNow;
+        this.riverNow = createRiver();
+    }
+
+    /*private void oneStep(double aTime){ // из кадра aTime-dt   получает кадр aTime
         this.currentTimeSlice = (int)Math.floor(aTime / dt); //номер кадра. может быть от 1 и выше, т.к. самый первый aTime = dt
         //dx=?? может быть меньше на последнем шаге
         for (int i = this.columns; i >= 0; i--){
@@ -145,7 +235,7 @@ public class Model {
                 //System.out.print(this.river[i][j][this.currentTimeSlice] + " ");
             }
         }
-    }
+    }*/
 
     /**
      * Уравнение переноса жидкости. Самая главная функция в модели.
@@ -202,7 +292,7 @@ public class Model {
         return minSpeedFlow;
     }
 
-    public String[][] getResult() {
+    /*public String[][] getResult() {
 
         String[][] result = new String[this.timeSlices][this.rows-1];
 
@@ -240,7 +330,7 @@ public class Model {
             }
         }
         return result;
-    }
+    }*/
 
     public double getDt() {
         return dt;
@@ -255,28 +345,17 @@ public class Model {
     }
 
     private void calculateParametres(){
-        double max = -1; int indexMax;
-        double averageConcentrationOnCP = 0;
-        for (int k = 0; k < this.timeSlices; k++) {
-            double rowSum = 0;
-            for (int j = 0; j < this.rows; j++) {
-                if (this.river[0][j][k] > max) {
-                    max = this.river[0][j][k];
-                }
-                rowSum +=this.river[0][j][k];
-            }
-            averageConcentrationOnCP += (rowSum/this.rows);
-        }
+
         averageConcentrationOnCP /= this.timeSlices;
-        this.CMAX = max;
-        this.degreeOfMixing = (averageConcentrationOnCP / max) * 100;
+
+        this.degreeOfMixing = (averageConcentrationOnCP / CMAX) * 100;
 
         if(pipes.length == 1){
             this.dilutionRatio = (this.pipes[0].getConcentration()) /  (this.CMAX - this.riverInfo.backgroundConcentration);
             this.CCTD = this.dilutionRatio * (this.substance.getLAC() - this.riverInfo.backgroundConcentration)  + this.riverInfo.backgroundConcentration;
             this.NDS = pipes[0].getWastewaterConsumption() * 3600 * CCTD;
         }
-        this.CMAXDevidedByPDK = max / this.substance.getLAC();
+        this.CMAXDevidedByPDK = CMAX / this.substance.getLAC();
 
 
     }
@@ -310,9 +389,6 @@ public class Model {
         return pipes;
     }
 
-    public double[][][] getRiver() {
-        return river;
-    }
 
     public double[] getDy() {
         return dy;
@@ -328,5 +404,42 @@ public class Model {
 
     public Double getCCTD() {
         return CCTD;
+    }
+
+    public int getRows() {
+        return rows;
+    }
+
+    @Override
+    public void run() {
+        this.process(this.endTime);
+    }
+
+    public double getStatus() {
+        return status.get();
+    }
+
+    public DoubleProperty statusProperty() {
+        return status;
+    }
+
+    public ObservableList<Double[]> getResults() {
+        return results;
+    }
+
+    public double getBackgroundConcetration(){
+        return this.riverInfo.backgroundConcentration;
+    }
+
+    public double getSplitDt() {
+        return splitDt;
+    }
+
+    public List<Double[][]> getSplits() {
+        return this.splits;
+    }
+
+    public Double[] getRiverMetres() {
+        return riverMetres;
     }
 }

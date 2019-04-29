@@ -4,6 +4,7 @@ import application.about.AboutWindow;
 import application.diffusionCalculatorWindow.DiffusionApp;
 import application.resultWindow.ResultWindow;
 import application.timeChooserWindow.TimeChooserWindow;
+import javafx.beans.property.StringProperty;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import model.Model;
@@ -41,20 +42,17 @@ public class ApplicationFactory {
     /**
      * Геттер окна калькулятора диффузии.
      * @param parent ссылка на родительскую сцену, которая вызыает окно.
-     * @param riverInfo данные о реке.
      * @return
      */
-    public DiffusionApp getDiffusionApp(Scene parent, River riverInfo){
+    public DiffusionApp getDiffusionApp(Scene parent, StringProperty textFieldRiverWidthProperty, StringProperty textFieldRiverDepthProperty, StringProperty textFieldFlowSpeedProperty, StringProperty textFieldDiffusionCoefProperty){
         if(diffusionApp == null){
             try {
-                diffusionApp = new DiffusionApp(parent, riverInfo);
+                diffusionApp = new DiffusionApp(parent);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        else {
-            diffusionApp.updateData(riverInfo);
-        }
+        diffusionApp.updateData(textFieldRiverWidthProperty, textFieldRiverDepthProperty, textFieldFlowSpeedProperty, textFieldDiffusionCoefProperty);
         return  diffusionApp;
     }
 
@@ -67,14 +65,13 @@ public class ApplicationFactory {
     public ResultWindow getResultWindow(Scene parent, Model model){
         if(resultWindow == null){
             try {
-                resultWindow = new ResultWindow(parent, model);
+                resultWindow = new ResultWindow(parent);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        else {
-            resultWindow.updateData(model);
-        }
+
+        resultWindow.updateData(model);
         return  resultWindow;
     }
 
@@ -88,14 +85,13 @@ public class ApplicationFactory {
     public TimeChooserWindow getTimeChooserWindow(Scene parent, double lenghtOfTheRiver, double averageFlowSpeed){
         if(resultWindow == null){
             try {
-                timeChooserWindow = new TimeChooserWindow(parent, lenghtOfTheRiver, averageFlowSpeed);
+                timeChooserWindow = new TimeChooserWindow(parent);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        else {
-            timeChooserWindow.updateData(lenghtOfTheRiver, averageFlowSpeed);
-        }
+        timeChooserWindow.updateData(lenghtOfTheRiver, averageFlowSpeed);
+
         return  timeChooserWindow;
     }
 

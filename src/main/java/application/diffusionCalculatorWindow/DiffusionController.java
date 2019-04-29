@@ -2,6 +2,7 @@ package application.diffusionCalculatorWindow;
 
 import application.ApplicationFactory;
 import application.ValidationChangeListener;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -32,16 +33,9 @@ public class DiffusionController {
     Map<String, Node> componentsOfGUI = new HashMap<String, Node>();
 
 
-    River riverInfo;
 
-    /**
-     * Метод для инициализации полей, а также задание логики поведедения некоторых
-     * элементов.
-     * @param riverInfo информация о реке, введенная пользователем.
-     */
-    public void init(River riverInfo){
-        this.riverInfo = riverInfo;
-        if(riverInfo.riverDepth >= 0){ this.textFieldRiverDepth.setText(String.valueOf(riverInfo.riverDepth)); }
+    public void init(){
+
         textFieldRiverDepth.textProperty().addListener(new ValidationChangeListener(textFieldRiverDepth));
 
         /*Подготовка контейнеров с текстбоксами и лейблами внутри
@@ -55,7 +49,7 @@ public class DiffusionController {
         labelRiverWidth.setId("textWithTooltip");
         Tooltip.install(labelRiverWidth, new Tooltip("Средняя ширина реки (м)"));
         TextField textFieldRiverWidth = new TextField();
-        if(riverInfo.riverWidth >= 0) { textFieldRiverWidth.setText(String.valueOf(riverInfo.riverWidth));}
+
         this.componentsOfGUI.put("textFieldRiverWidth", textFieldRiverWidth);
         textFieldRiverWidth.textProperty().addListener(new ValidationChangeListener(textFieldRiverWidth));
         VBox riverWidthContainer = new VBox(labelRiverWidth, textFieldRiverWidth);
@@ -64,7 +58,6 @@ public class DiffusionController {
         labelFlowSpeed.setId("textWithTooltip");
         Tooltip.install(labelFlowSpeed, new Tooltip("Средняя скорость течения реки (м/c)"));
         TextField textFieldFlowSpeed = new TextField();
-        if(riverInfo.flowSpeed >= 0) { textFieldFlowSpeed.setText(String.valueOf(riverInfo.flowSpeed)); }
         textFieldFlowSpeed.textProperty().addListener(new ValidationChangeListener(textFieldFlowSpeed));
         this.componentsOfGUI.put("textFieldFlowSpeed", textFieldFlowSpeed);
         VBox flowSpeedContainer = new VBox(labelFlowSpeed, textFieldFlowSpeed);
@@ -225,5 +218,12 @@ public class DiffusionController {
         }
 
 
+    }
+
+    public void updateBinds(StringProperty textFieldRiverWidthProperty, StringProperty textFieldRiverDepthProperty, StringProperty textFieldFlowSpeedProperty, StringProperty textFieldDiffusionCoefProperty) {
+        this.textFieldRiverDepth.textProperty().bindBidirectional(textFieldRiverDepthProperty);
+        this.textFieldResult.textProperty().bindBidirectional(textFieldDiffusionCoefProperty);
+        ((TextField)this.componentsOfGUI.get("textFieldRiverWidth")).textProperty().bindBidirectional(textFieldRiverWidthProperty);
+        ((TextField)this.componentsOfGUI.get("textFieldFlowSpeed")).textProperty().bindBidirectional(textFieldFlowSpeedProperty);
     }
 }

@@ -139,9 +139,8 @@ public abstract class BasePipe implements IPipe, Comparable<BasePipe> {
         StringBuilder str = new StringBuilder();
         str.append(String.format("Удаленность точки выпуска от контр. створа (КМ) : %.3f\n", (this.x / 1000)));
         /* bank  false - правый берег; true - левый берег;  */
-        str.append("Берег, с которого производится выпуск: " + ((this.bank) ? "Правый" : "Левый") + "\n");
+        str.append("Берег, с которого производится выпуск: " + ((this.bank) ? "Левый" : "Правый") + "\n");
         str.append(this.mode.toString());
-        str.append("Берег, с которого производится выпуск: " + ((this.bank) ? "Правый" : "Левый") + "\n");
         str.append("Концентрация примести в стоках(мг/л): " + this.concentration + "\n");
         str.append("Расход сточных вод (м^3/сек): " + this.wastewaterConsumption + "\n");
         return str.toString();

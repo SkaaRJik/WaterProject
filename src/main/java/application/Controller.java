@@ -74,8 +74,15 @@ public class Controller {
 
         /* Базовая часть всех труб */
        //TilePane  = new TilePane(Orientation.HORIZONTAL);
+
+
+
         FlowPane flowPane = new FlowPane(Orientation.HORIZONTAL,5, 5);
 
+        AnchorPane root = new AnchorPane(flowPane);
+        AnchorPane.setTopAnchor(flowPane, 5.0);
+        AnchorPane.setLeftAnchor(flowPane, 5.0);
+        AnchorPane.setRightAnchor(flowPane, 5.0);
 
         flowPane.setPrefWrapLength(Region.USE_COMPUTED_SIZE);
         flowPane.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
@@ -221,7 +228,7 @@ public class Controller {
         /* ___________________________________________________________ */
 
 
-        TitledPane titledPane = new TitledPane(null, flowPane);
+        TitledPane titledPane = new TitledPane(null, root);
 
         choiceBoxTypeOfPipe.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             switch (oldValue) {
@@ -436,20 +443,20 @@ public class Controller {
      * в соответствующих полях главного окна.
      */
     public void runDiffusionCalculator() {
-        //Если в окно калькулятора придут отрицательные значения, значит поля не были заполнены пользователем
+        /*//Если в окно калькулятора придут отрицательные значения, значит поля не были заполнены пользователем
         double riverWidth = -1;
         double riverDepth = -1;
         double riverFlowSpeed = -1;
         //_____________________________________________________________________________________________________
         String temp = this.textFieldRiverWidth.getText();
         if(!temp.isEmpty()){ riverWidth = Double.parseDouble(temp); }
-        temp = this.textFieldRiverDepth.getText();
+        temp = .getText();
         if(!temp.isEmpty()){ riverDepth = Double.parseDouble(temp); }
-        temp = this.textFieldFlowSpeed.getText();
+        temp = .getText();
         if(!temp.isEmpty()) { riverFlowSpeed = Double.parseDouble(temp); }
 
-        River riverInfo = new River(riverWidth, riverDepth, riverFlowSpeed);
-        ApplicationFactory.getInstance().getDiffusionApp(this.textFieldConcentration.getScene(), riverInfo).show();
+        River riverInfo = new River(riverWidth, riverDepth, riverFlowSpeed);*/
+        ApplicationFactory.getInstance().getDiffusionApp(this.textFieldConcentration.getScene(), this.textFieldRiverWidth.textProperty(), this.textFieldRiverDepth.textProperty(), this.textFieldFlowSpeed.textProperty(), this.textFieldDiffusionCoef.textProperty()).show();
     }
 
     public void calculate(ActionEvent event) {
@@ -471,6 +478,7 @@ public class Controller {
         Substance substance;
         double dt = 0;
         double endTime = 0;
+        double splitDt = 0;
         try {
             riverInfo = this.createRiverFromGUI();
             substance = this.createSubstanceFromGUI();
@@ -478,8 +486,10 @@ public class Controller {
             Arrays.sort(pipes);
             TimeChooserWindow timeChooserWindow = ApplicationFactory.getInstance().getTimeChooserWindow(this.textFieldConcentration.getScene(), pipes[pipes.length-1].getEndX(), riverInfo.flowSpeed);
             timeChooserWindow.show();
+            if(timeChooserWindow.wasClosed()) return;
             dt = timeChooserWindow.getDt();
             endTime = timeChooserWindow.getEndTime();
+            splitDt = timeChooserWindow.getSpliceDt();
         } catch (NumberFormatException ex){
             ApplicationFactory.getInstance().getAlert("Все поля должны быть заполнены!").showAndWait();
             return;
@@ -487,7 +497,7 @@ public class Controller {
             ApplicationFactory.getInstance().getAlert("Нет работающих труб!").showAndWait();
             return;
         }
-        model = new Model(riverInfo, pipes, substance,Integer.parseInt(textFieldRound.getText()), endTime*60, dt);
+        model = new Model(riverInfo, pipes, substance,Integer.parseInt(textFieldRound.getText()), endTime*60, dt, splitDt);
         ApplicationFactory.getInstance().getResultWindow(textFieldRound.getScene(), model).show();
 
 
@@ -581,12 +591,14 @@ public class Controller {
 
     @FXML
     void loadData(){
+        File input = new File("input");
+        input.mkdir();
         FileChooser fileChooser = new FileChooser();//Класс работы с диалогом выборки и сохранения
         fileChooser.setTitle("Open Document");//Заголовок диалога
         FileChooser.ExtensionFilter extFilter =
                 new FileChooser.ExtensionFilter("Water Project (*.wtr)", "*.wtr");//Расширение
         fileChooser.getExtensionFilters().add(extFilter);
-        fileChooser.setInitialDirectory(new File("input").getAbsoluteFile());
+        fileChooser.setInitialDirectory(input.getAbsoluteFile());
         File file = fileChooser.showOpenDialog(this.textFieldConcentration.getScene().getWindow());//Указываем текущую сцену CodeNote.mainStage
         if (file != null) {
                 String[] parametres = null;

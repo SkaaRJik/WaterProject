@@ -18,163 +18,168 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox stylesheets="@../css/light.css" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
-   <children>
-      <MenuBar>
-        <menus>
-          <Menu mnemonicParsing="false" text="Файл">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#cleanFields" text="Новый" />
-                  <MenuItem mnemonicParsing="false" onAction="#loadData" text="Загрузить" />
-                  <MenuItem mnemonicParsing="false" onAction="#saveData" text="Сохранить" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" onAction="#exitProgram" text="Выход" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Инструменты">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#runDiffusionCalculator" text="Калькулятор поперечной диффузии" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Помощь">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#showAbout" text="О программе" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-      <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" pannable="true">
-         <content>
-            <VBox>
-               <children>
-                  <TitledPane fx:id="riverTitlePane" text="Данные о реке">
-                     <content>
-                        <TilePane hgap="5.0" prefColumns="3" tileAlignment="TOP_LEFT" vgap="5.0">
-                           <children>
-                              <VBox>
-                                 <children>
-                                    <Label text="LB - Средняя ширина (м.)" />
-                                    <TextField fx:id="textFieldRiverWidth" />
-                                 </children>
-                              </VBox>
-                              <VBox>
-                                 <children>
-                                    <Label text="LH - Средняя глубина (м.)" />
-                                    <TextField fx:id="textFieldRiverDepth" />
-                                 </children>
-                              </VBox>
-                              <VBox>
-                                 <children>
-                                    <Label styleClass="textWithTooltip" text="VS - Сред. скорость течения">
-                                       <tooltip>
-                                          <Tooltip text="Средняя скорость течения (м/c)" />
-                                       </tooltip></Label>
-                                    <TextField fx:id="textFieldFlowSpeed" />
-                                 </children>
-                              </VBox>
-                              <VBox>
-                                 <children>
-                                    <Label styleClass="textWithTooltip" stylesheets="@../css/light.css" text="DY - Диффузия">
-                                       <tooltip>
-                                          <Tooltip text=" Коэффициент поперечной диффузии" />
-                                       </tooltip>
-                                    </Label>
-                                    <TextField fx:id="textFieldDiffusionCoef" />
-                                 </children>
-                              </VBox>
-                              <VBox>
-                                 <children>
-                                    <Label styleClass="textWithTooltip" stylesheets="@../css/light.css" text="K1 - Неконсервативность">
-                                       <tooltip>
-                                          <Tooltip text="Коэффициент неконсервативности" />
-                                       </tooltip>
-                                    </Label>
-                                    <TextField fx:id="textFieldNonConservatismCoef" />
-                                 </children>
-                              </VBox>
-                              <VBox />
-                           </children>
-                        </TilePane>
-                     </content>
-                  </TitledPane>
-                  <TitledPane fx:id="substanceTitlePane" text="Вещества">
-                     <content>
-                        <TilePane hgap="5.0" prefColumns="3" vgap="5.0">
-                           <children>
-                              <VBox>
-                                 <children>
-                                    <Label text="Наименование" />
-                                    <TextField fx:id="textFieldSubstance" />
-                                 </children>
-                              </VBox>
-                              <VBox>
-                                 <children>
-                                    <Label text="Доля в ЛПВ" />
-                                    <TextField fx:id="textFieldProportion" />
-                                 </children>
-                              </VBox>
-                              <VBox>
-                                 <children>
-                                    <Label text="Значение CPDK" />
-                                    <TextField fx:id="textFieldLAC" />
-                                 </children>
-                              </VBox>
-                              <VBox>
-                                 <children>
-                                    <Label styleClass="textWithTooltip" text="Фоновая концентрация">
-                                       <tooltip>
-                                          <Tooltip text="Фоновая концентрация в реке" />
-                                       </tooltip>
-                                    </Label>
-                                    <TextField fx:id="textFieldConcentration" />
-                                 </children>
-                              </VBox>
-                              <VBox>
-                                 <children>
-                                    <Label styleClass="textWithTooltip" text="Округление">
-                                       <tooltip>
-                                          <Tooltip text="Количество цифр после запятой {0, 1, 2, 3 ...}" />
-                                       </tooltip>
-                                    </Label>
-                                    <TextField fx:id="textFieldRound" text="4" />
-                                 </children>
-                              </VBox>
-                           </children>
-                        </TilePane>
-                     </content>
-                  </TitledPane>
-                  <BorderPane styleClass="borderpane">
-                     <center>
-                        <Label text="Выпуска">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Label>
-                     </center>
-                  </BorderPane>
-                  <Accordion fx:id="accordionPlant" />
-                  <AnchorPane>
+
+<BorderPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
+   <top>
+      <VBox alignment="TOP_CENTER" stylesheets="@../css/light.css" BorderPane.alignment="CENTER">
+         <children>
+            <MenuBar>
+              <menus>
+                <Menu mnemonicParsing="false" text="Файл">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#cleanFields" text="Новый" />
+                        <MenuItem mnemonicParsing="false" onAction="#loadData" text="Загрузить" />
+                        <MenuItem mnemonicParsing="false" onAction="#saveData" text="Сохранить" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#exitProgram" text="Выход" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Инструменты">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#runDiffusionCalculator" text="Калькулятор поперечной диффузии" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Помощь">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#showAbout" text="О программе" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <TitledPane fx:id="riverTitlePane" text="Данные о реке">
+               <content>
+                  <TilePane hgap="5.0" prefColumns="3" tileAlignment="TOP_LEFT" vgap="5.0">
                      <children>
-                        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#addTitledPanePipe" text="+" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-                           <tooltip>
-                              <Tooltip text="Добавить выпуск" />
-                           </tooltip>
-                        </Button>
+                        <VBox>
+                           <children>
+                              <Label text="LB - Средняя ширина (м.)" />
+                              <TextField fx:id="textFieldRiverWidth" />
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label text="LH - Средняя глубина (м.)" />
+                              <TextField fx:id="textFieldRiverDepth" />
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label styleClass="textWithTooltip" text="VS - Сред. скорость течения">
+                                 <tooltip>
+                                    <Tooltip text="Средняя скорость течения (м/c)" />
+                                 </tooltip>
+                              </Label>
+                              <TextField fx:id="textFieldFlowSpeed" />
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label styleClass="textWithTooltip" stylesheets="@../css/light.css" text="DY - Диффузия">
+                                 <tooltip>
+                                    <Tooltip text=" Коэффициент поперечной диффузии" />
+                                 </tooltip>
+                              </Label>
+                              <TextField fx:id="textFieldDiffusionCoef" />
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label styleClass="textWithTooltip" stylesheets="@../css/light.css" text="K1 - Неконсервативность">
+                                 <tooltip>
+                                    <Tooltip text="Коэффициент неконсервативности" />
+                                 </tooltip>
+                              </Label>
+                              <TextField fx:id="textFieldNonConservatismCoef" />
+                           </children>
+                        </VBox>
+                        <VBox />
                      </children>
-                  </AnchorPane>
-                  <AnchorPane prefHeight="3.0" styleClass="separatorCustom">
-                     <VBox.margin>
-                        <Insets bottom="5.0" top="5.0" />
-                     </VBox.margin>
-                  </AnchorPane>
-                  <BorderPane>
-                     <center>
-                        <Button mnemonicParsing="false" onAction="#calculate" text="Расчет" />
-                     </center>
-                  </BorderPane>
+                  </TilePane>
+               </content>
+            </TitledPane>
+            <TitledPane fx:id="substanceTitlePane" text="Вещества">
+               <content>
+                  <TilePane hgap="5.0" prefColumns="3" vgap="5.0">
+                     <children>
+                        <VBox>
+                           <children>
+                              <Label text="Наименование" />
+                              <TextField fx:id="textFieldSubstance" />
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label text="Доля в ЛПВ" />
+                              <TextField fx:id="textFieldProportion" />
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label text="Значение CPDK" />
+                              <TextField fx:id="textFieldLAC" />
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label styleClass="textWithTooltip" text="Фоновая концентрация">
+                                 <tooltip>
+                                    <Tooltip text="Фоновая концентрация в реке" />
+                                 </tooltip>
+                              </Label>
+                              <TextField fx:id="textFieldConcentration" />
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label styleClass="textWithTooltip" text="Округление">
+                                 <tooltip>
+                                    <Tooltip text="Количество цифр после запятой {0, 1, 2, 3 ...}" />
+                                 </tooltip>
+                              </Label>
+                              <TextField fx:id="textFieldRound" text="4" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </TilePane>
+               </content>
+            </TitledPane>
+            <Label text="Выпуска">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <AnchorPane>
+         <children>
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" pannable="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <content>
+                  <Accordion fx:id="accordionPlant" />
+               </content>
+            </ScrollPane>
+         </children>
+      </AnchorPane>
+   </center>
+   <bottom>
+      <VBox alignment="CENTER" spacing="5.0" BorderPane.alignment="CENTER">
+         <children>
+            <AnchorPane>
+               <children>
+                  <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#addTitledPanePipe" text="+" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                     <tooltip>
+                        <Tooltip text="Добавить выпуск" />
+                     </tooltip>
+                  </Button>
                </children>
-            </VBox>
-         </content>
-      </ScrollPane>
-   </children>
-</VBox>
+            </AnchorPane>
+            <Button mnemonicParsing="false" onAction="#calculate" text="Расчет">
+               <VBox.margin>
+                  <Insets bottom="5.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+      </VBox>
+   </bottom>
+</BorderPane>

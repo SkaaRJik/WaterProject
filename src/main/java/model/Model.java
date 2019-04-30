@@ -1,6 +1,8 @@
 package model;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -70,6 +72,8 @@ public class Model implements Runnable{
 
     double splitDt;
     private List<Double[][]> splits;
+
+    BooleanProperty calculationIsOver = new SimpleBooleanProperty(false);
 
 
     public Model(River river, BasePipe[] pipes, Substance substance, int round, double endTime, double dt, double splitDt) {
@@ -174,13 +178,16 @@ public class Model implements Runnable{
         }
         while (this.currentTimeSlice<=limk){
             this.oneStep(aTime, limk);
-            this.status.setValue(aTime/limk);
+            this.status.setValue(aTime / endTime);
             aTime += dt;
             this.currentTimeSlice = (int)Math.floor(aTime / dt); //номер кадра.
+
 
         }
         this.status.setValue(1.0);
         this.calculateParametres();
+        calculationIsOverProperty().setValue(true);
+
     }
 
     private void oneStep(double aTime, double maxSlices){ // из кадра aTime-dt   получает кадр aTime
@@ -441,5 +448,13 @@ public class Model implements Runnable{
 
     public Double[] getRiverMetres() {
         return riverMetres;
+    }
+
+    public boolean isCalculationIsOver() {
+        return calculationIsOver.get();
+    }
+
+    public BooleanProperty calculationIsOverProperty() {
+        return calculationIsOver;
     }
 }

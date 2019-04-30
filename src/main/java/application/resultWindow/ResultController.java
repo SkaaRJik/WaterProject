@@ -61,11 +61,12 @@ public class ResultController {
 
     public void updateModel(Model model) {
         this.model = model;
-        this.textArea.setEditable(false);
+
         this.tableView.getColumns().clear();
         this.tableView.getItems().clear();
 
         this.timeControlGrid.setVisible(false);
+        this.saveReportButton.setDisable(true);
 
 
         maxValue = null;
@@ -110,11 +111,6 @@ public class ResultController {
 
         this.textFieldTime.textProperty().addListener(new ValidationChangeListener(this.textFieldTime));
 
-        this.model.statusProperty().addListener((observable, oldValue, newValue) -> {
-            if((Double)newValue == 1.0){
-                this.saveReportButton.setDisable(false);
-            }
-        });
         this.modellingProgressBar.progressProperty().bind(this.model.statusProperty());
 
         /*ChangeListener<String> listener = new ChangeListener<String>() {
@@ -149,16 +145,15 @@ public class ResultController {
             }
         });
 
-        this.model.statusProperty().addListener((observable, oldValue, newValue) -> {
-            Platform.runLater(() -> {
-                if((Double) newValue >= 1.0){
-                    showReport();
-                    if(model.getSplits() != null){
-                        this.timeControlGrid.setVisible(true);
-                    }
-                    this.maxValue = new SimpleDoubleProperty(this.model.getCMAX());
+        this.model.calculationIsOverProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue){
+                showReport();
+                this.saveReportButton.setDisable(false);
+                if(model.getSplits() != null){
+                    this.timeControlGrid.setVisible(true);
                 }
-            });
+                this.maxValue = new SimpleDoubleProperty(this.model.getCMAX());
+            }
         });
 
         this.textFieldTime.setText("0");
@@ -434,24 +429,44 @@ public class ResultController {
             }
 
 
-            int maxColumn = String.valueOf(results.get(results.size()-1)[0]).length()+3+this.model.getRound();
+            //int maxColumn = String.valueOf(results.get(results.size()-1)[0]).length()+3+this.model.getRound();
+            /*int maxTimeColumn = String.format("%.2f / %.2f", results.get(results.size()-1)[0], results.get(results.size()-1)[0]/60).length();
+            int maxWasteColumn = String.format("%."+model.getRound()+"f", model.getCMAX()).length();*/
+
+            /*int maxTimeInt = String.format("%.0f", results.get(results.size()-1)[0]).length();
+            int maxWasteInt = String.format("%.0f", model.getCMAX()).length();*/
+
+            int maxTimeInt = Integer.max(String.format("%.2f", results.get(results.size()-1)[0]).length(), "Время (сек)".length());
+            int maxWasteInt = String.format("%."+model.getRound()+"f", model.getCMAX()).length();
 
 
-            for (int i = 0; i < this.tableView.getColumns().size(); i++) {
+
+            /*for (int i = 0; i < this.tableView.getColumns().size(); i++) {
                 if (i == 0) writer.write(String.format("|%"+(maxColumn+2)+"s", "Время (с)"));
                 else writer.write(String.format("|%" + (this.model.getRound() + 3 + this.model.getRound()) + "d|", i));
+            }*/
+
+            for (int i = 0; i < this.tableView.getColumns().size(); i++) {
+                if (i == 0) {
+                    writer.write(String.format("| %"+maxTimeInt+"s |", "Время (сек)"));
+                    writer.write(String.format("| %"+maxTimeInt+"s |", "Время (мин)"));
+                }
+                else writer.write(String.format("| % "+ (maxWasteInt) +"d |", i));
             }
+
+
             writer.write("\n");
 
 
             for (int i = 0; i < shortcutResultIndexes.size() - 1; i++) {
-                //table.addRow(tableRowOne);
+
                 int indexesStep = (shortcutResultIndexes.get(i + 1) - shortcutResultIndexes.get(i) - 1) / 3;
                 for (int j = 0; j < results.get(0).length; j++) {
-                    if (i == 0) {
-                        writeTimeColumn(writer, results.get(shortcutResultIndexes.get(i))[j],  maxColumn);
+                    if (j == 0) {
+                        writeTimeColumn(writer, results.get(shortcutResultIndexes.get(i))[j],  maxTimeInt);
+                        writeTimeColumn(writer, results.get(shortcutResultIndexes.get(i))[j] / 60,  maxTimeInt);
                     } else
-                        writeWasteColumn(writer, results.get(shortcutResultIndexes.get(i))[j]);
+                        writeWasteColumn(writer, results.get(shortcutResultIndexes.get(i))[j], maxWasteInt);
 
                 }
                 writer.write("\n");
@@ -459,19 +474,23 @@ public class ResultController {
                 if (indexesStep == 0) continue;
                 for (int k = 1; k < 3; k++) {
                     for (int j = 0; j < results.get(0).length; j++) {
-                        if (i == 0)
-                            writeTimeColumn(writer, results.get(k * indexesStep + shortcutResultIndexes.get(i))[j], maxColumn);
+                        if (j == 0) {
+                            writeTimeColumn(writer, results.get(k * indexesStep + shortcutResultIndexes.get(i))[j], maxTimeInt);
+                            writeTimeColumn(writer, results.get(k * indexesStep + shortcutResultIndexes.get(i))[j] / 60, maxTimeInt);
+                        }
                         else
-                            writeWasteColumn(writer, results.get(k * indexesStep + shortcutResultIndexes.get(i))[j]);
+                            writeWasteColumn(writer, results.get(k * indexesStep + shortcutResultIndexes.get(i))[j], maxWasteInt);
                     }
                     writer.write("\n");
                 }
             }
             for (int j = 0; j < results.get(0).length; j++) {
-                if (j == 0)
-                    writeTimeColumn(writer, results.get(shortcutResultIndexes.get(shortcutResultIndexes.size() - 1))[j], maxColumn);
+                if (j == 0) {
+                    writeTimeColumn(writer, results.get(shortcutResultIndexes.get(shortcutResultIndexes.size() - 1))[j], maxTimeInt);
+                    writeTimeColumn(writer, results.get(shortcutResultIndexes.get(shortcutResultIndexes.size() - 1))[j] / 60, maxTimeInt);
+                }
                 else
-                    writeWasteColumn(writer, results.get(shortcutResultIndexes.get(shortcutResultIndexes.size() - 1))[j]);
+                    writeWasteColumn(writer, results.get(shortcutResultIndexes.get(shortcutResultIndexes.size() - 1))[j] ,maxWasteInt);
             }
 
             writer.write("\n\n");
@@ -484,10 +503,10 @@ public class ResultController {
     }
 
     private void writeTimeColumn(FileWriter writer, Double aDouble, int maxColumn) throws IOException {
-        writer.write(String.format("|%"+maxColumn+".2f",  aDouble));
+        writer.write(String.format("| %"+maxColumn+".2f |", aDouble));
     }
-    private void writeWasteColumn(FileWriter writer, Double aDouble) throws IOException {
-        writer.write(String.format("|%" + (this.model.getRound() + 3) + "."+this.model.getRound()+"f|",  aDouble));
+    private void writeWasteColumn(FileWriter writer, Double aDouble, int maxColumn) throws IOException {
+        writer.write(String.format("| %" + maxColumn + "."+this.model.getRound()+"f |",  aDouble));
     }
 
     private XWPFParagraph createDocParagraph(XWPFDocument docxModel, String text){
@@ -501,8 +520,6 @@ public class ResultController {
 
 
     public void init() {
-
-
-
+        this.textArea.setEditable(false);
     }
 }
